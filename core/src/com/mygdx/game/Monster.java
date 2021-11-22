@@ -13,7 +13,7 @@ public class Monster extends Actor{
     Vector2 position = new Vector2();
     Vector2 velocity = new Vector2();
     Rectangle bounds = new Rectangle();
-    boolean isJumping = false;
+    boolean isSleeping = true;
 
     public Monster() {
         super();
@@ -26,19 +26,28 @@ public class Monster extends Actor{
         this.bounds.width = SIZE;
     }
 
-    public void attack(){}
-
-    public void moveLeft(){
-        velocity.x = -20f;
+    public float getMonsterX(){
+        return velocity.x;
     }
 
-    public void moveRight(){
-        velocity.x = 20f;
+    public float getMonsterY(){
+        return velocity.y;
     }
 
-    public void moveUp(){
-        isJumping = true;
-        velocity.y = 20f;
+    public void setMonsterX(float x){
+        velocity.x = x;
+    }
+
+    public void setMonsterY(float y){
+        velocity.y = y;
+    }
+
+    public void activeMonster(){
+        isSleeping = false;
+    }
+
+    public void attack(){
+
     }
 
     @Override
@@ -52,10 +61,9 @@ public class Monster extends Actor{
         // add velocity to position
         position.add(velocity);
         // change velocity
-        if (isJumping){
-            velocity.y -= GRAVITY;
+        if (!isSleeping) {
+            attack();
         }
-        velocity.x = 0;
     }
 
 }
