@@ -6,20 +6,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Hero extends Actor {
-    public enum State {
-        IDLE, WALKING, JUMPING, DYING
-    }
-
-    static final float SPEED = 2f; // unit per second
-    static final float JUMP_VELOCITY = 1f;
-    static final float SIZE = 0.5f; // half a unit
+    static final float SPEED = 2f;
+    static final float GRAVITY = 5f;
+    static final float SIZE = 0.5f;
 
     Vector2 position = new Vector2();
-    Vector2 acceleration = new Vector2();
     Vector2 velocity = new Vector2();
     Rectangle bounds = new Rectangle();
-    State  state = State.IDLE;
-    boolean  facingLeft = true;
+    boolean isJumping = false;
 
     public Hero() {
         super();
@@ -32,6 +26,21 @@ public class Hero extends Actor {
         this.bounds.width = SIZE;
     }
 
+    public void attack(){}
+
+    public void moveLeft(){
+        velocity.x = -20f;
+    }
+
+    public void moveRight(){
+        velocity.x = 20f;
+    }
+
+    public void moveUp(){
+        isJumping = true;
+        velocity.y = 20f;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
@@ -40,5 +49,12 @@ public class Hero extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+        // add velocity to position
+        position.add(velocity);
+        // change velocity
+        if (isJumping){
+            velocity.y -= GRAVITY;
+        }
+        velocity.x = 0;
     }
 }
