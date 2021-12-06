@@ -27,6 +27,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import java.awt.Event;
 import java.util.Iterator;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainGame implements Screen {
 	private Game game;
@@ -38,7 +41,10 @@ public class MainGame implements Screen {
 	private Button RIGHT;
 	private Stage stage;
 	private Hero hero;
-	private Monster monster;
+	private Monster fireMonster;
+	private Monster shooter;
+	private Attack fire;
+	private Attack bullet;
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
@@ -98,18 +104,37 @@ public class MainGame implements Screen {
 		// create hero
 		hero = new Hero();
 		hero.img = new Texture("Ball.png");
-		//create monster
-		monster = new Monster();
-		monster.img = new Texture("bird.png");
+		//create fire monster
+		fireMonster = new Monster();
+		fireMonster.setType("fire");
+		fireMonster.img = new Texture("bird.png");
+		//create shooter
+		shooter = new Monster();
+		shooter.img = new Texture("bird.png");
+		shooter.setType("shooter");
+
+		//create fire
+		fire = new Attack();
+		fire.img = new Texture("fire.jpg");
+		//create bullet
+		bullet = new Attack();
+		bullet.img = new Texture("fire.jpg");
+
+
 		// set hero's position at the start position
 		//MapLayer game_objects = map.getLayers().get("game_objects");
 		//System.out.println("!!!!!!!!!!!!!!!!!!"+game_objects);
 		int x = 32, y = 32;
 		hero.position.set(x,y);
-		// set monster's position
+		 //set monster's position
 		int a = 32, b = 32;
-		monster.position.set(a,b);
-		monster.activeMonster();
+		fireMonster.position.set(a,b);
+		fire.position.set(a+30,b+20);
+		fireMonster.activeMonster();
+		int c = 50, d = 32;
+		shooter.position.set(c,d);
+		bullet.position.set(c,d+20);
+		shooter.activeMonster();
 
 		// create a camera
 		camera = new OrthographicCamera();
@@ -137,16 +162,27 @@ public class MainGame implements Screen {
 		renderer.render();
 
 
-		// render the ball
+		// render the ball,firemonster,shooter
 		Batch batch = renderer.getBatch();
-		monster.position.add(monster.velocity);
-		Event velocity;
-		camera.translate(monster.velocity.x,0);
 		batch.begin();
 		batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
-		batch.draw(monster.img,monster.position.x,monster.position.y,Monster.WIDTH,Monster.HEIGHT);
+		batch.draw(fireMonster.img,fireMonster.position.x,fireMonster.position.y,Monster.WIDTH,
+				Monster.HEIGHT);
+		batch.draw(shooter.img,shooter.position.x,shooter.position.y,Monster.WIDTH,Monster
+				.HEIGHT);
+
+
+		for(int i = 0 ;i < 3; i++){
+			batch.draw(fire.img,fire.position.x + i*5,fire.position.y ,fire.WIDTH,
+					fire.HEIGHT);
+		}
+		batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
+					bullet.HEIGHT);
+
+
 		batch.end();
-		monster.act(delta);
+		fireMonster.fire(fire);
+		shooter.shoot(bullet);
 	}
 
 	@Override
