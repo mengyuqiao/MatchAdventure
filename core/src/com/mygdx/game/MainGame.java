@@ -36,7 +36,7 @@ public class MainGame implements Screen {
 	public static final float WORLD_WIDTH = 480;
 	public static final float WORLD_HEIGHT = 800;
 	private Button UP;
-	private Button DOWN;
+	private Button Shoot;
 	private Button LEFT;
 	private Button RIGHT;
 	private Stage stage;
@@ -46,6 +46,7 @@ public class MainGame implements Screen {
 	private Attack fire;
 	private Attack bullet;
 	private TiledMap map;
+	protected Skin skin;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private Array<Rectangle> tiles = new Array<Rectangle>();
@@ -55,16 +56,15 @@ public class MainGame implements Screen {
 			return new Rectangle();
 		}
 	};
-	int flag = 0;
-	float distance = 0;
 
 	public MainGame(Game game){
 		this.game = game;
 	}
 
 	public void show() {
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-
+		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		Table mainTable = new Table();
 		mainTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		//Set table to fill stage
@@ -72,30 +72,19 @@ public class MainGame implements Screen {
 		//Set alignment of contents in the table.
 		mainTable.center();
 		Button.ButtonStyle style = new Button.ButtonStyle();
-		UP = new Button(style);
-		UP.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-			}
-		});
-		DOWN = new Button(style);
-		DOWN.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-			}
-		});
-		LEFT = new Button(style);
-		LEFT.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-			}
-		});
-		RIGHT = new Button(style);
-		RIGHT.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-			}
-		});
+		UP = new Button(skin);
+		LEFT = new Button(skin);
+		RIGHT = new Button(skin);
+		Shoot = new Button(skin);
+		UP.setSize(150,150);
+		UP.setPosition(1600, 400);
+		LEFT.setSize(150,150);
+		LEFT.setPosition(1750, 250);
+		RIGHT.setSize(150,150);
+		RIGHT.setPosition(1450, 250);
+		Shoot.setSize(150,150);
+		Shoot.setPosition(100, 250);
+
 
 		// load the map
 		map = new TmxMapLoader().load("matchadventure.tmx");
@@ -126,7 +115,59 @@ public class MainGame implements Screen {
 		//System.out.println("!!!!!!!!!!!!!!!!!!"+game_objects);
 		int x = 32, y = 32;
 		hero.position.set(x,y);
-		 //set monster's position
+		UP.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (hero.left == false) {
+					camera.translate(-10,0);
+					hero.position.y = hero.position.y + 30;
+					hero.position.x = hero.position.x - 10;
+					Timer timer = new Timer();
+					TimerTask timerTask = new TimerTask() {
+						@Override
+						public void run() {
+							camera.translate(-10,0);
+							hero.position.y = hero.position.y - 30;
+							hero.position.x = hero.position.x - 10;
+						}
+					};
+					timer.schedule(timerTask, 100);
+				}
+				if (hero.right == false) {
+					hero.position.y = hero.position.y + 30;
+					hero.position.x = hero.position.x + 10;
+					camera.translate(+10,0);
+					Timer timer = new Timer();
+					TimerTask timerTask = new TimerTask() {
+						@Override
+						public void run() {
+							camera.translate(+10,0);
+							hero.position.y = hero.position.y - 30;
+							hero.position.x = hero.position.x + 10;
+						}
+					};
+					timer.schedule(timerTask, 100);
+				}
+				if(hero.left==true&&hero.right==true){
+					hero.position.y = hero.position.y + 30;
+					Timer timer = new Timer();
+					TimerTask timerTask = new TimerTask() {
+						@Override
+						public void run() {
+							hero.position.y = hero.position.y - 30;
+						}
+					};
+					timer.schedule(timerTask, 100);
+				}
+			}
+		});
+		Shoot.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				bullet.position.set(hero.position.x+10,hero.position.y+20);
+			}
+		});
+		//set monster's position
 		int a = 32, b = 32;
 		fireMonster.position.set(a,b);
 		fire.position.set(a+30,b+20);
@@ -135,6 +176,10 @@ public class MainGame implements Screen {
 		shooter.position.set(c,d);
 		bullet.position.set(c,d+20);
 		shooter.activeMonster();
+		stage.addActor(UP);
+		stage.addActor(LEFT);
+		stage.addActor(RIGHT);
+		stage.addActor(Shoot);
 
 		// create a camera
 		camera = new OrthographicCamera();
@@ -160,6 +205,18 @@ public class MainGame implements Screen {
 		// camera sees, and render the map
 		renderer.setView(camera);
 		renderer.render();
+		if(LEFT.isPressed()){
+			camera.translate(+2,0);
+			hero.position.x=hero.position.x+2;
+			hero.left = true;
+			hero.right = false;
+		}
+		if(RIGHT.isPressed()){
+			camera.translate(-2,0);
+			hero.position.x=hero.position.x-2;
+			hero.right = true;
+			hero.left = false;
+		}
 
 
 		// render the ball,firemonster,shooter
@@ -183,6 +240,9 @@ public class MainGame implements Screen {
 		batch.end();
 		fireMonster.fire(fire);
 		shooter.shoot(bullet);
+		hero.shoot(bullet);
+		stage.act();
+		stage.draw();
 	}
 
 	@Override

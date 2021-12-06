@@ -41,11 +41,31 @@ public class Attack extends Actor {
         }
         return 0;
     }
+    public int heroshootRight(){
+        position.x = position.x + SPEED;
+        distance = distance + 2.5f;
+        if(distance > 500f){
+            position.x = 50;
+            distance = 0;
+            return 1;
+        }
+        return 0;
+    }
 
+    public int heroshootLeft(){
+        position.x = position.x - SPEED;
+        distance = distance + 2.5f;
+        if(distance > 500f){
+            position.x = 50;
+            distance = 0;
+            return 1;
+        }
+        return 0;
+    }
     public int shootLeft(){
         position.x = position.x - SPEED;
         distance = distance + 2.5f;
-        if(distance > 300f){
+        if(distance > 500f){
             position.x = 50;
             distance = 0;
             return 1;
