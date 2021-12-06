@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+import java.awt.Event;
 import java.util.Iterator;
 
 public class MainGame implements Screen {
@@ -37,6 +38,7 @@ public class MainGame implements Screen {
 	private Button RIGHT;
 	private Stage stage;
 	private Hero hero;
+	private Monster monster;
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
@@ -47,6 +49,8 @@ public class MainGame implements Screen {
 			return new Rectangle();
 		}
 	};
+	int flag = 0;
+	float distance = 0;
 
 	public MainGame(Game game){
 		this.game = game;
@@ -94,22 +98,33 @@ public class MainGame implements Screen {
 		// create hero
 		hero = new Hero();
 		hero.img = new Texture("Ball.png");
+		//create monster
+		monster = new Monster();
+		monster.img = new Texture("bird.png");
 		// set hero's position at the start position
-		MapLayer game_objects = map.getLayers().get("game_objects");
-		System.out.println("!!!!!!!!!!!!!!!!!!"+game_objects);
+		//MapLayer game_objects = map.getLayers().get("game_objects");
+		//System.out.println("!!!!!!!!!!!!!!!!!!"+game_objects);
 		int x = 32, y = 32;
 		hero.position.set(x,y);
+		// set monster's position
+		int a = 32, b = 32;
+		monster.position.set(a,b);
+		monster.activeMonster();
 
 		// create a camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 160, 160);
 		camera.update();
-		// camera.translate(-32,0);
+
+
+		//camera.translate(50,0);
 	}
 
 
 	@Override
 	public void render(float delta) {
+
+
 		// clear the screen
 		ScreenUtils.clear(0.7f, 0.7f, 1.0f, 1);
 
@@ -121,11 +136,17 @@ public class MainGame implements Screen {
 		renderer.setView(camera);
 		renderer.render();
 
+
 		// render the ball
 		Batch batch = renderer.getBatch();
+		monster.position.add(monster.velocity);
+		Event velocity;
+		camera.translate(monster.velocity.x,0);
 		batch.begin();
 		batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+		batch.draw(monster.img,monster.position.x,monster.position.y,Monster.WIDTH,Monster.HEIGHT);
 		batch.end();
+		monster.act(delta);
 	}
 
 	@Override
