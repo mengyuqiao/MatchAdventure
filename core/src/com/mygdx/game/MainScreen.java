@@ -35,7 +35,7 @@ public class MainScreen implements Screen {
 		this.game = game;
 		atlas = new TextureAtlas("uiskin.atlas");
 		skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
-		background = new Texture("background.jpg");
+		background = new Texture("backgroundtest.jpg");
 		FileHandle bgmHandle = Gdx.files.internal("bgm.wav");
 		bgm = Gdx.audio.newMusic(bgmHandle);
 		bgm.setLooping(true);
@@ -82,13 +82,7 @@ public class MainScreen implements Screen {
 		playButton.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-			}
-		});
-
-		IntroButton.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(new Introduction(game));
+				game.setScreen(new MainGame(game));
 			}
 		});
 

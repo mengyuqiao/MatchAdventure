@@ -1,19 +1,26 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import java.awt.Image;
+
 public class Hero extends Actor {
-    static final float SPEED = 2f;
+    static final float SPEED = 20f;
     static final float GRAVITY = 5f;
     static final float SIZE = 0.5f;
+    static final float WIDTH = 32f;
+    static final float HEIGHT = 32f;
 
     Vector2 position = new Vector2();
     Vector2 velocity = new Vector2();
     Rectangle bounds = new Rectangle();
     boolean isJumping = false;
+    int hp = 5;
+    Texture img;
 
     public Hero() {
         super();
@@ -28,17 +35,25 @@ public class Hero extends Actor {
 
     public void attack(){}
 
+    public void getHit(){
+        hp--;
+    }
+
     public void moveLeft(){
-        velocity.x = -20f;
+        velocity.x = -SPEED;
     }
 
     public void moveRight(){
-        velocity.x = 20f;
+        velocity.x = SPEED;
     }
 
     public void moveUp(){
         isJumping = true;
         velocity.y = 20f;
+    }
+
+    public boolean testDead(){
+        return hp <= 0;
     }
 
     @Override
