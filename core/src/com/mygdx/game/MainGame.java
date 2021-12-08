@@ -201,7 +201,6 @@ public class MainGame implements Screen {
 		batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
 					bullet.HEIGHT);
 
-
 		batch.end();
 		fireMonster.fire(fire);
 		shooter.shoot(bullet);
