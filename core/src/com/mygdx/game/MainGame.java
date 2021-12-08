@@ -88,7 +88,7 @@ public class MainGame implements Screen {
 
 		// create hero
 		hero = new Hero();
-		hero.img = new Texture("Ball.png");
+		hero.img = new Texture("32x32_match.png");
 
 		// create a camera
 		camera = new OrthographicCamera();
@@ -102,7 +102,7 @@ public class MainGame implements Screen {
 		//create fire monster
 		fireMonster = new Monster();
 		fireMonster.setType("fire");
-		fireMonster.img = new Texture("fairy.png");
+		fireMonster.img = new Texture("32x32_fairy.png");
 		//create shooter
 		//shooter = new Monster();
 		//shooter.img = new Texture("bird.png");
@@ -110,10 +110,10 @@ public class MainGame implements Screen {
 
 		//create fire
 		fire = new Attack();
-		fire.img = new Texture("fire.jpg");
+		fire.img = new Texture("16x16_fireball.png");
 		//create bullet
 		bullet = new Attack();
-		bullet.img = new Texture("fire.jpg");
+		bullet.img = new Texture("16x16_fireball.png");
 
 
 		// set hero's position at the start position
@@ -330,10 +330,5 @@ public class MainGame implements Screen {
 				}
 			}
 		}
-	}
-
-	public void heroMoveLeft(){
-		camera.translate(-20, 0);
-		hero.moveLeft();
 	}
 }
