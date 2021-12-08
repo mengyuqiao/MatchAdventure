@@ -181,10 +181,10 @@ public class MainGame implements Screen {
 		//set monster's position
 		fireMonster.position.set(400,130);
 		fire.position.set(410,130);
-		fireMonster.activeMonster();
+		fireMonster.activeMonster(fire);
 		fireMonster2.position.set(900,130);
 		fire2.position.set(885,130);
-		fireMonster2.activeMonster();
+		fireMonster2.activeMonster(fire2);
 
 		//shooter.activeMonster();
 		stage.addActor(UP);
@@ -232,17 +232,21 @@ public class MainGame implements Screen {
 		Batch batch = renderer.getBatch();
 		batch.begin();
 		batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
-		batch.draw(fireMonster.img,fireMonster.position.x,fireMonster.position.y,Monster.WIDTH,
-				Monster.HEIGHT);
-		batch.draw(fireMonster2.img,fireMonster2.position.x,fireMonster2.position.y,Monster.WIDTH,
-				Monster.HEIGHT);
+		if(!fireMonster.isDead){
+			batch.draw(fireMonster.img,fireMonster.position.x,fireMonster.position.y,Monster.WIDTH,
+					Monster.HEIGHT);
+		}
+		if(!fireMonster2.isDead){
+			batch.draw(fireMonster2.img,fireMonster2.position.x,fireMonster2.position.y,Monster.WIDTH,
+					Monster.HEIGHT);
+		}
 		//batch.draw(shooter.img,shooter.position.x,shooter.position.y,Monster.WIDTH,Monster
 		//.HEIGHT);
-		if(draw_left == 1){
+		if(draw_left == 1 && fire.isActive){
 			batch.draw(fire.img,fire.position.x,fire.position.y ,fire.WIDTH,
 					fire.HEIGHT);
 		}
-		if (draw_right == 1){
+		if (draw_right == 1 && fire.isActive){
 			batch.draw(fire2.img,fire2.position.x,fire2.position.y ,fire.WIDTH,
 					fire.HEIGHT);
 		}
@@ -253,7 +257,8 @@ public class MainGame implements Screen {
 		batch.end();
 		draw_left = fireMonster.fireRight(fire);
 		draw_right = fireMonster2.fireLeft(fire2);
-		heroDestroyDetection();
+		heroDestroyDetection(fire);
+		heroDestroyDetection(fire2);
 		//shooter.shoot(bullet);
 
 
@@ -286,7 +291,7 @@ public class MainGame implements Screen {
 	public void dispose() {
 
 	}
-	public void heroDestroyDetection(){
+	public void heroDestroyDetection(Attack fire){
 		Rectangle heroRec = new Rectangle();
 		Rectangle fireRec = new Rectangle();
 		heroRec.set(hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
@@ -297,14 +302,14 @@ public class MainGame implements Screen {
 		}
 	}
 
-	public void monsterDestroyDetection(){
+	public void monsterDestroyDetection(Attack fire){
 		Rectangle monsterRec = new Rectangle();
 		Rectangle bulletRec = new Rectangle();
 		monsterRec.set(fireMonster.position.x, fireMonster.position.y, fireMonster.WIDTH,
 				fireMonster.HEIGHT);
 		bulletRec.set(bullet.position.x,bullet.position.y,bullet.WIDTH,bullet.HEIGHT);
 		if (Intersector.overlaps(monsterRec,bulletRec)){
-			fireMonster.setDead();
+			fireMonster.setDead(fire);
 		}
 	}
 

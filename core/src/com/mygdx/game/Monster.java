@@ -113,24 +113,16 @@ public class Monster extends Actor{
         }
     }
 
-    public float getMonsterX(){
-        return velocity.x;
-    }
-    public float getMonsterY(){
-        return velocity.y;
-    }
-    public void setMonsterX(float x){
-        velocity.x = x;
-    }
-    public void setMonsterY(float y){
-        velocity.y = y;
-    }
-    public void activeMonster(){
+    public void activeMonster(Attack attack){
+        attack.isActive = true;
         isDead= false;
     }
-    public void setDead(){
+
+    public void setDead(Attack attack){
+        attack.isActive = false;
         isDead = true;
     }
+
     public void attack(){ }
     @Override
     public void draw(Batch batch, float parentAlpha) {

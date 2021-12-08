@@ -21,6 +21,9 @@ public class Attack extends Actor {
     float distance = 0;
     int flag = 0;
     String type;
+    String active;
+    boolean isActive = false;
+
     public Attack() {
         super();
     }
@@ -32,6 +35,7 @@ public class Attack extends Actor {
     public void setType(String type){
         this.type = type;
     }
+
 
 
     public int shootRight(){
