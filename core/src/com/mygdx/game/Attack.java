@@ -34,7 +34,7 @@ public class Attack extends Actor {
     public int shootRight(){
         position.x = position.x + SPEED;
         distance = distance + 2.5f;
-        if(distance > 300f){
+        if(distance > 400f){
             position.x = 50;
             distance = 0;
             return 1;
@@ -44,7 +44,7 @@ public class Attack extends Actor {
     public int heroshootRight(){
         position.x = position.x + SPEED;
         distance = distance + 2.5f;
-        if(distance > 500f){
+        if(distance > 400f){
             position.x = 50;
             distance = 0;
             return 1;
