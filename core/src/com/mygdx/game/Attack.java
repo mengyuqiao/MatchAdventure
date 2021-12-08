@@ -7,11 +7,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Attack extends Actor {
-    static final float SPEED = 2.5f;
+    static final float SPEED = 2f;
     static final float GRAVITY = 5f;
     static final float SIZE = 0.1f;
-    static final float WIDTH = 5f;
-    static final float HEIGHT = 5f;
+    static final float WIDTH = 16f;
+    static final float HEIGHT = 16f;
 
     Vector2 position = new Vector2();
     Vector2 velocity = new Vector2();
@@ -19,8 +19,17 @@ public class Attack extends Actor {
     Texture img;
     float distance = 0;
     int flag = 0;
+    String type;
     public Attack() {
         super();
+    }
+
+    public String getType(){
+        return type;
+    }
+
+    public void setType(String type){
+        this.type = type;
     }
 
     public void fire(int flag) {
