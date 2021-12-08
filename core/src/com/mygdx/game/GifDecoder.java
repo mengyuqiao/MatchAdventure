@@ -4,9 +4,6 @@ package com.mygdx.game;
 /* LibGdx conversion 2014 by Anton Persson */
 /* Released under Apache 2.0 */
 /* https://code.google.com/p/animated-gifs-in-android/ */
-
-package com.holidaystudios.tools;
-
 import java.io.InputStream;
 import java.util.Vector;
 

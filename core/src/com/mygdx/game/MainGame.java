@@ -43,7 +43,7 @@ public class MainGame implements Screen {
 	public static final float WORLD_WIDTH = 480;
 	public static final float WORLD_HEIGHT = 800;
 	private ImageButton UP;
-	private Button Shoot;
+	private ImageButton Shoot;
 	private ImageButton LEFT;
 	private ImageButton RIGHT;
 	private Stage stage;
@@ -59,12 +59,15 @@ public class MainGame implements Screen {
 	private Texture upTexture;
 	private Texture rightTexture;
 	private Texture leftTexture;
+	private Texture shootTexture;
 	private TextureRegion UpTextureRegion;
 	private TextureRegion RightTextureRegion;
 	private TextureRegion leftTextureRegion;
+	private TextureRegion shootTextureRegion;
 	private TextureRegionDrawable upTextureRegionDrawable;
 	private TextureRegionDrawable leftTextureRegionDrawable;
 	private TextureRegionDrawable rightTextureRegionDrawable;
+	private TextureRegionDrawable shootTextureRegionDrawable;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private Texture background;
@@ -81,7 +84,7 @@ public class MainGame implements Screen {
 	int draw_right = 0;
 	public MainGame(Game game){
 		this.game = game;
-		background = new Texture("backgroundtest.jpg");
+		background = new Texture("background1.png");
 		FileHandle bgmHandle = Gdx.files.internal("bgm.wav");
 		bgm = Gdx.audio.newMusic(bgmHandle);
 		bgm.setLooping(true);
@@ -101,6 +104,12 @@ public class MainGame implements Screen {
 		rightTexture = new Texture(Gdx.files.internal("rightbutton.png"));
 		RightTextureRegion = new TextureRegion(rightTexture);
 		rightTextureRegionDrawable = new TextureRegionDrawable(RightTextureRegion);
+		rightTexture = new Texture(Gdx.files.internal("rightbutton.png"));
+		RightTextureRegion = new TextureRegion(rightTexture);
+		rightTextureRegionDrawable = new TextureRegionDrawable(RightTextureRegion);
+		shootTexture = new Texture(Gdx.files.internal("attack.png"));
+		shootTextureRegion = new TextureRegion(shootTexture);
+		shootTextureRegionDrawable = new TextureRegionDrawable(shootTextureRegion);
 		Table mainTable = new Table();
 		mainTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		//Set table to fill stage
@@ -111,10 +120,10 @@ public class MainGame implements Screen {
 		UP = new ImageButton(upTextureRegionDrawable);
 		LEFT = new ImageButton(leftTextureRegionDrawable);
 		RIGHT = new ImageButton(rightTextureRegionDrawable);
-		Shoot = new Button(skin);
+		Shoot = new ImageButton(shootTextureRegionDrawable);
 		UP.getImage().setFillParent(true);
-		UP.setSize(250,200);
-		UP.setPosition(0, 250);
+		UP.setSize(250,250);
+		UP.setPosition(0, 50);
 		LEFT.getImage().setFillParent(true);
 		LEFT.setSize(250,250);
 		LEFT.setPosition(1250, 50);
@@ -122,7 +131,7 @@ public class MainGame implements Screen {
 		RIGHT.setSize(250,250);
 		RIGHT.setPosition(1620, 60);
 		Shoot.setSize(150,150);
-		Shoot.setPosition(100, 150);
+		Shoot.setPosition(125, 500);
 
 		// create hero
 		hero = new Hero();
@@ -201,7 +210,12 @@ public class MainGame implements Screen {
 
 		// clear the screen
 		ScreenUtils.clear(0.7f, 0.7f, 1.0f, 1);
-
+		stage.getBatch().begin();
+		stage.getBatch().draw(background, -hero.position.x, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		stage.getBatch().end();
+		stage.getBatch().begin();
+		stage.getBatch().draw(background, 2100-hero.position.x, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		stage.getBatch().end();
 		// let the camera follow the hero
 		camera.position.set(hero.position.x + 8, hero.position.y + 60, 0);
 		camera.update();
