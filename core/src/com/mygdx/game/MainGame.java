@@ -77,6 +77,8 @@ public class MainGame implements Screen {
 		}
 	};
 
+	int draw_left = 0;
+	int draw_right = 0;
 	public MainGame(Game game){
 		this.game = game;
 		background = new Texture("backgroundtest.jpg");
@@ -236,19 +238,21 @@ public class MainGame implements Screen {
 				Monster.HEIGHT);
 		//batch.draw(shooter.img,shooter.position.x,shooter.position.y,Monster.WIDTH,Monster
 		//.HEIGHT);
-
-		batch.draw(fire.img,fire.position.x,fire.position.y ,fire.WIDTH,
+		if(draw_left == 1){
+			batch.draw(fire.img,fire.position.x,fire.position.y ,fire.WIDTH,
 					fire.HEIGHT);
-		batch.draw(fire2.img,fire2.position.x,fire2.position.y ,fire.WIDTH,
-				fire.HEIGHT);
-
+		}
+		if (draw_right == 1){
+			batch.draw(fire2.img,fire2.position.x,fire2.position.y ,fire.WIDTH,
+					fire.HEIGHT);
+		}
 
 		//batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
 		//		bullet.HEIGHT);
 
 		batch.end();
-		fireMonster.fireRight(fire);
-		fireMonster2.fireLeft(fire2);
+		draw_left = fireMonster.fireRight(fire);
+		draw_right = fireMonster2.fireLeft(fire2);
 		heroDestroyDetection();
 		//shooter.shoot(bullet);
 

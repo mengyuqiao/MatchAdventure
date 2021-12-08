@@ -13,7 +13,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Monster extends Actor{
-    static final float SPEED = 2f;
+    static final float SPEED = 1f;
     static final float GRAVITY = 5f;
     static final float SIZE = 0.5f;
     static final float WIDTH = 16f;
@@ -25,8 +25,10 @@ public class Monster extends Actor{
     boolean isDead = true;
     Texture img;
     int flag = 1; //denote the direction of monster
-    float distance = 0;
+    float distanceLeft = 0;
+    float distanceRight = 0;
     int id;
+
     int r = 1;//denote the directio
 
     public Monster() {
@@ -48,44 +50,52 @@ public class Monster extends Actor{
         this.id = 1;
     }
 
-    public void fireRight(Attack attack){
-        distance = distance + SPEED;
+    public int fireRight(Attack attack){
+        int draw = 0;
+        distanceLeft = distanceLeft + SPEED;
         if(flag == 1){
             position.x = position.x + SPEED;
-            attack.fire(1);
-            if(distance == 70f){
+            if(25f > distanceLeft && distanceLeft < 50f){
+                draw = 1;
+                attack.position.set(position.x + 10,position.y);
+            }
+            if(distanceLeft == 50f){
                 flag = 0;
-                distance = 0;
+                distanceLeft = 0;
             }
         }
         else{
             position.x = position.x - SPEED;
-            attack.fire(0);
-            if(distance == 70f){
+            if(distanceLeft == 50f){
                 flag = 1;
-                distance = 0;
+                distanceLeft = 0;
             }
         }
+        return draw;
     }
 
-    public void fireLeft(Attack attack){
-        distance = distance + SPEED;
+    public int fireLeft(Attack attack){
+        int draw = 0;
+        distanceRight = distanceRight + SPEED;
         if(flag == 1){
             position.x = position.x - SPEED;
-            attack.fire(0);
-            if(distance == 50f){
+            if(25f > distanceRight && distanceRight < 50f){
+                draw = 1;
+                attack.position.set(position.x - 10,position.y);
+            }
+            if(distanceRight == 50f){
                 flag = 0;
-                distance = 0;
+                distanceRight = 0;
             }
         }
         else{
             position.x = position.x + SPEED;
-            attack.fire(1);
-            if(distance == 50f){
+            if(distanceRight == 50f){
                 flag = 1;
-                distance = 0;
+                distanceRight = 0;
             }
         }
+        return draw;
     }
 
 

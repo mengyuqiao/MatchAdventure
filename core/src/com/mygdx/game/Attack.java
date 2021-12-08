@@ -7,11 +7,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Attack extends Actor {
-    static final float SPEED = 2f;
+    static final float SPEED = 0.5f;
     static final float GRAVITY = 5f;
     static final float SIZE = 0.1f;
     static final float WIDTH = 16f;
     static final float HEIGHT = 16f;
+    int count = 0;
 
     Vector2 position = new Vector2();
     Vector2 velocity = new Vector2();
@@ -32,13 +33,6 @@ public class Attack extends Actor {
         this.type = type;
     }
 
-    public void fire(int flag) {
-        if (flag == 1) {
-            position.x = position.x + SPEED;
-        } else {
-            position.x = position.x - SPEED;
-        }
-    }
 
     public int shootRight(){
         position.x = position.x + SPEED;
