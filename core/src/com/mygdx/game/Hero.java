@@ -10,8 +10,8 @@ import java.awt.Image;
 import java.util.Random;
 
 public class Hero extends Actor {
-    static final float SPEED = 20f;
-    static final float GRAVITY = 5f;
+    static final float SPEED = 2f;
+    static final float GRAVITY = 1f;
     static final float SIZE = 0.5f;
     static final float WIDTH = 32f;
     static final float HEIGHT = 32f;
@@ -19,12 +19,12 @@ public class Hero extends Actor {
     Vector2 position = new Vector2();
     Vector2 velocity = new Vector2();
     Rectangle bounds = new Rectangle();
-    boolean isJumping = true;
-    boolean left = true;
+    boolean isJumping = false;
+    boolean left = false;
     boolean right = true;
+    boolean onTheGround = true;
     int hp = 5;
     Texture img;
-    int r = 1;//denote the directio
 
     public Hero() {
         super();
@@ -44,19 +44,26 @@ public class Hero extends Actor {
     }
 
     public void moveLeft(){
-        position.x = position.x+2;
+        position.x += SPEED;
+        left = true;
+        right = false;
     }
 
     public void moveRight(){
-        position.x = position.x-2;
+        position.x -= SPEED;
+        right = true;
+        left = false;
     }
 
     public void moveUp(){
-        isJumping = true;
-    }
-
-    public void moveDown(){
-        isJumping = true;
+        velocity.y += 10;
+        if (left){
+            moveLeft();
+        }else {
+            moveRight();
+        }
+        isJumping = false;
+        onTheGround = false;
     }
 
     public boolean testDead(){
@@ -69,10 +76,10 @@ public class Hero extends Actor {
     }
 
     public void shoot(Attack attack){
-        if(left == true){
+        if(left){
             attack.heroshootRight();
         }
-        else if(right == true){
+        else if(right){
             attack.heroshootLeft();
         }
     }
@@ -80,11 +87,19 @@ public class Hero extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
-        // add velocity to position
-        position.add(velocity);
         // change velocity
         if (isJumping) {
             moveUp();
         }
+
+        // add velocity to position
+        if (!onTheGround) {
+            if (velocity.y > -2*GRAVITY){
+                velocity.y -= GRAVITY;
+            }
+        }else {
+            velocity.y = -GRAVITY;
+        }
+        position.add(velocity);
     }
 }

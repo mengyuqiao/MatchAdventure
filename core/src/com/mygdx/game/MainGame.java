@@ -85,14 +85,19 @@ public class MainGame implements Screen {
 		Shoot.setSize(150,150);
 		Shoot.setPosition(100, 250);
 
+		// create hero
+		hero = new Hero();
+		hero.img = new Texture("Ball.png");
+
+		// create a camera
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, 160, 160);
+		camera.update();
 
 		// load the map
 		map = new TmxMapLoader().load("matchadventure.tmx");
 		renderer = new OrthogonalTiledMapRenderer(map);
 
-		// create hero
-		hero = new Hero();
-		hero.img = new Texture("Ball.png");
 		//create fire monster
 		fireMonster = new Monster();
 		fireMonster.setType("fire");
@@ -111,54 +116,17 @@ public class MainGame implements Screen {
 
 
 		// set hero's position at the start position
-		//MapLayer game_objects = map.getLayers().get("game_objects");
-		//System.out.println("!!!!!!!!!!!!!!!!!!"+game_objects);
 		int x = 32, y = 32;
 		hero.position.set(x,y);
 		UP.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if (hero.left == false) {
-					camera.translate(-10,0);
-					hero.position.y = hero.position.y + 30;
-					hero.position.x = hero.position.x - 10;
-					Timer timer = new Timer();
-					TimerTask timerTask = new TimerTask() {
-						@Override
-						public void run() {
-							camera.translate(-10,0);
-							hero.position.y = hero.position.y - 30;
-							hero.position.x = hero.position.x - 10;
-						}
-					};
-					timer.schedule(timerTask, 100);
-				}
-				if (hero.right == false) {
-					hero.position.y = hero.position.y + 30;
-					hero.position.x = hero.position.x + 10;
-					camera.translate(+10,0);
-					Timer timer = new Timer();
-					TimerTask timerTask = new TimerTask() {
-						@Override
-						public void run() {
-							camera.translate(+10,0);
-							hero.position.y = hero.position.y - 30;
-							hero.position.x = hero.position.x + 10;
-						}
-					};
-					timer.schedule(timerTask, 100);
-				}
-				if(hero.left==true&&hero.right==true){
-					hero.position.y = hero.position.y + 30;
-					Timer timer = new Timer();
-					TimerTask timerTask = new TimerTask() {
-						@Override
-						public void run() {
-							hero.position.y = hero.position.y - 30;
-						}
-					};
-					timer.schedule(timerTask, 100);
-				}
+				hero.moveUp();
+//				if (hero.left){
+//					camera.translate(+2, 0);
+//				}else {
+//					camera.translate(-2, 0);
+//				}
 			}
 		});
 		Shoot.addListener(new ClickListener(){
@@ -181,13 +149,6 @@ public class MainGame implements Screen {
 		stage.addActor(RIGHT);
 		stage.addActor(Shoot);
 
-		// create a camera
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 160, 160);
-		camera.update();
-
-
-		//camera.translate(50,0);
 	}
 
 
@@ -199,6 +160,7 @@ public class MainGame implements Screen {
 		ScreenUtils.clear(0.7f, 0.7f, 1.0f, 1);
 
 		// let the camera follow the koala, x-axis only
+		camera.position.set(hero.position.x + 60, hero.position.y + 60, 0);
 		camera.update();
 
 		// set the TiledMapRenderer view based on what the
@@ -206,18 +168,21 @@ public class MainGame implements Screen {
 		renderer.setView(camera);
 		renderer.render();
 		if(LEFT.isPressed()){
-			camera.translate(+2,0);
-			hero.position.x=hero.position.x+2;
+//			camera.translate(+2,0);
+			hero.moveLeft();
 			hero.left = true;
 			hero.right = false;
 		}
 		if(RIGHT.isPressed()){
-			camera.translate(-2,0);
-			hero.position.x=hero.position.x-2;
+//			camera.translate(-2,0);
+			hero.moveRight();
 			hero.right = true;
 			hero.left = false;
 		}
 
+		collisionDetection();
+
+		stage.addActor(hero);
 
 		// render the ball,firemonster,shooter
 		Batch batch = renderer.getBatch();
@@ -290,18 +255,23 @@ public class MainGame implements Screen {
 		for (Rectangle tile : tiles) {
 			if (heroRec.overlaps(tile)) {
 				if (heroRec.x + heroRec.width > tile.x && hero.velocity.x > 0){
-					heroRec.x -= hero.velocity.x;
+					heroRec.x = tile.x - heroRec.width;
+					hero.position.x = tile.x - heroRec.width;
 					hero.velocity.x = 0;
 				}else if(heroRec.x < tile.x + tile.width && hero.velocity.x < 0){
-					heroRec.x -= hero.velocity.x;
+					heroRec.x = tile.x + tile.width;
+					hero.position.x = tile.x + tile.width;
 					hero.velocity.x = 0;
 				}
 				else if (heroRec.y + heroRec.height > tile.y && hero.velocity.y > 0){
-					heroRec.y -= hero.velocity.y;
+					heroRec.y = tile.y - heroRec.height;
+					hero.position.y = tile.y - heroRec.height;
 					hero.velocity.y = 0;
 				}else if(heroRec.y < tile.y + tile.height && hero.velocity.y < 0){
-					heroRec.y -= hero.velocity.y;
+					heroRec.y = tile.y + tile.height;
+					hero.position.y = tile.y + tile.height;
 					hero.velocity.y = 0;
+					hero.onTheGround = true;
 				}
 			}
 		}
@@ -339,7 +309,7 @@ public class MainGame implements Screen {
 	}
 
 	public void heroMoveLeft(){
-		camera.translate(20, 0);
+		camera.translate(-20, 0);
 		hero.moveLeft();
 	}
 }
