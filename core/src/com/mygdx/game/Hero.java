@@ -1,7 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -25,13 +28,16 @@ public class Hero extends Actor {
     boolean onTheGround = true;
     int hp = 5;
     Texture img;
+    Animation<TextureRegion> attackAnimation;
 
     public Hero() {
         super();
+        attackAnimation = GifDecoder.loadGIFAnimation(Animation.PlayMode.NORMAL, Gdx.files.internal("match-fire-bg.gif").read());
     }
 
     public Hero(Vector2 position) {
         super();
+        attackAnimation = GifDecoder.loadGIFAnimation(Animation.PlayMode.NORMAL, Gdx.files.internal("match-fire-bg.gif").read());
         this.position = position;
         this.bounds.height = SIZE;
         this.bounds.width = SIZE;
