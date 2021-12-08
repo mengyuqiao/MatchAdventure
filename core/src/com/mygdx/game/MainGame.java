@@ -4,9 +4,12 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -18,8 +21,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -27,6 +32,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import java.awt.Event;
+import java.awt.Image;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Timer;
@@ -36,10 +42,10 @@ public class MainGame implements Screen {
 	private Game game;
 	public static final float WORLD_WIDTH = 480;
 	public static final float WORLD_HEIGHT = 800;
-	private Button UP;
+	private ImageButton UP;
 	private Button Shoot;
-	private Button LEFT;
-	private Button RIGHT;
+	private ImageButton LEFT;
+	private ImageButton RIGHT;
 	private Stage stage;
 	private Hero hero;
 	private Monster fireMonster;
@@ -48,8 +54,19 @@ public class MainGame implements Screen {
 	private Attack bullet;
 	private TiledMap map;
 	protected Skin skin;
+	private Texture upTexture;
+	private Texture rightTexture;
+	private Texture leftTexture;
+	private TextureRegion UpTextureRegion;
+	private TextureRegion RightTextureRegion;
+	private TextureRegion leftTextureRegion;
+	private TextureRegionDrawable upTextureRegionDrawable;
+	private TextureRegionDrawable leftTextureRegionDrawable;
+	private TextureRegionDrawable rightTextureRegionDrawable;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
+	private Texture background;
+	private Music bgm;
 	private Array<Rectangle> tiles = new Array<Rectangle>();
 	private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 		@Override
@@ -60,12 +77,26 @@ public class MainGame implements Screen {
 
 	public MainGame(Game game){
 		this.game = game;
+		background = new Texture("backgroundtest.jpg");
+		FileHandle bgmHandle = Gdx.files.internal("bgm.wav");
+		bgm = Gdx.audio.newMusic(bgmHandle);
+		bgm.setLooping(true);
+		bgm.play();
 	}
 
 	public void show() {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		upTexture = new Texture(Gdx.files.internal("upbutton.png"));
+		UpTextureRegion = new TextureRegion(upTexture);
+		upTextureRegionDrawable = new TextureRegionDrawable(UpTextureRegion);
+		leftTexture = new Texture(Gdx.files.internal("rightbutton.png"));
+		leftTextureRegion = new TextureRegion(leftTexture);
+		leftTextureRegionDrawable = new TextureRegionDrawable(leftTextureRegion);
+		rightTexture = new Texture(Gdx.files.internal("leftbutton.png"));
+		RightTextureRegion = new TextureRegion(rightTexture);
+		rightTextureRegionDrawable = new TextureRegionDrawable(RightTextureRegion);
 		Table mainTable = new Table();
 		mainTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		//Set table to fill stage
@@ -73,18 +104,21 @@ public class MainGame implements Screen {
 		//Set alignment of contents in the table.
 		mainTable.center();
 		Button.ButtonStyle style = new Button.ButtonStyle();
-		UP = new Button(skin);
-		LEFT = new Button(skin);
-		RIGHT = new Button(skin);
+		UP = new ImageButton(upTextureRegionDrawable);
+		LEFT = new ImageButton(leftTextureRegionDrawable);
+		RIGHT = new ImageButton(rightTextureRegionDrawable);
 		Shoot = new Button(skin);
-		UP.setSize(150,150);
-		UP.setPosition(1600, 400);
-		LEFT.setSize(150,150);
-		LEFT.setPosition(1750, 250);
-		RIGHT.setSize(150,150);
-		RIGHT.setPosition(1450, 250);
+		UP.getImage().setFillParent(true);
+		UP.setSize(250,200);
+		UP.setPosition(0, 250);
+		LEFT.getImage().setFillParent(true);
+		LEFT.setSize(250,250);
+		LEFT.setPosition(1720, 60);
+		RIGHT.getImage().setFillParent(true);
+		RIGHT.setSize(250,250);
+		RIGHT.setPosition(1450, 50);
 		Shoot.setSize(150,150);
-		Shoot.setPosition(100, 250);
+		Shoot.setPosition(100, 150);
 
 		// create hero
 		hero = new Hero();
