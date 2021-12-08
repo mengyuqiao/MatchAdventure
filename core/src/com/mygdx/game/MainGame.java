@@ -202,8 +202,8 @@ public class MainGame implements Screen {
 		// clear the screen
 		ScreenUtils.clear(0.7f, 0.7f, 1.0f, 1);
 
-		// let the camera follow the koala, x-axis only
-		camera.position.set(hero.position.x + 60, hero.position.y + 60, 0);
+		// let the camera follow the hero
+		camera.position.set(hero.position.x + 8, hero.position.y + 60, 0);
 		camera.update();
 
 		// set the TiledMapRenderer view based on what the
