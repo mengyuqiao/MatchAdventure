@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -43,7 +44,7 @@ public class MainGame implements Screen {
 	public static final float WORLD_WIDTH = 480;
 	public static final float WORLD_HEIGHT = 800;
 	private ImageButton UP;
-	private Button Shoot;
+	private ImageButton Shoot;
 	private ImageButton LEFT;
 	private ImageButton RIGHT;
 	private Stage stage;
@@ -59,12 +60,15 @@ public class MainGame implements Screen {
 	private Texture upTexture;
 	private Texture rightTexture;
 	private Texture leftTexture;
+	private Texture shootTexture;
 	private TextureRegion UpTextureRegion;
 	private TextureRegion RightTextureRegion;
 	private TextureRegion leftTextureRegion;
+	private TextureRegion shootTextureRegion;
 	private TextureRegionDrawable upTextureRegionDrawable;
 	private TextureRegionDrawable leftTextureRegionDrawable;
 	private TextureRegionDrawable rightTextureRegionDrawable;
+	private TextureRegionDrawable shootTextureRegionDrawable;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private Texture background;
@@ -81,11 +85,12 @@ public class MainGame implements Screen {
 	int draw_right = 0;
 	public MainGame(Game game){
 		this.game = game;
-		background = new Texture("backgroundtest.jpg");
+		background = new Texture("background1.png");
 		FileHandle bgmHandle = Gdx.files.internal("bgm.wav");
 		bgm = Gdx.audio.newMusic(bgmHandle);
 		bgm.setLooping(true);
 		bgm.play();
+
 	}
 
 	public void show() {
@@ -101,28 +106,30 @@ public class MainGame implements Screen {
 		rightTexture = new Texture(Gdx.files.internal("rightbutton.png"));
 		RightTextureRegion = new TextureRegion(rightTexture);
 		rightTextureRegionDrawable = new TextureRegionDrawable(RightTextureRegion);
+		shootTexture = new Texture(Gdx.files.internal("attack.png"));
+		shootTextureRegion = new TextureRegion(shootTexture);
+		shootTextureRegionDrawable = new TextureRegionDrawable(shootTextureRegion);
 		Table mainTable = new Table();
 		mainTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		//Set table to fill stage
 		mainTable.setFillParent(true);
 		//Set alignment of contents in the table.
 		mainTable.center();
-		Button.ButtonStyle style = new Button.ButtonStyle();
 		UP = new ImageButton(upTextureRegionDrawable);
 		LEFT = new ImageButton(leftTextureRegionDrawable);
 		RIGHT = new ImageButton(rightTextureRegionDrawable);
-		Shoot = new Button(skin);
+		Shoot = new ImageButton(shootTextureRegionDrawable);
 		UP.getImage().setFillParent(true);
 		UP.setSize(250,200);
-		UP.setPosition(0, 250);
+		UP.setPosition(0, 100);
 		LEFT.getImage().setFillParent(true);
 		LEFT.setSize(250,250);
 		LEFT.setPosition(1250, 50);
 		RIGHT.getImage().setFillParent(true);
 		RIGHT.setSize(250,250);
 		RIGHT.setPosition(1620, 60);
-		Shoot.setSize(150,150);
-		Shoot.setPosition(100, 150);
+		Shoot.setSize(250,150);
+		Shoot.setPosition(79, 500);
 
 		// create hero
 		hero = new Hero();
@@ -197,11 +204,15 @@ public class MainGame implements Screen {
 
 	@Override
 	public void render(float delta) {
-
-
-		// clear the screen
 		ScreenUtils.clear(0.7f, 0.7f, 1.0f, 1);
-
+		float backx;
+		backx = hero.position.x;
+		stage.getBatch().begin();
+		stage.getBatch().draw(background, -backx, 0, Gdx.graphics.getWidth(), 1300);
+		stage.getBatch().end();
+		stage.getBatch().begin();
+		stage.getBatch().draw(background, 2000 - backx, 0, Gdx.graphics.getWidth(), 1300);
+		stage.getBatch().end();
 		// let the camera follow the koala, x-axis only
 		camera.position.set(hero.position.x + 60, hero.position.y + 60, 0);
 		camera.update();
@@ -224,7 +235,6 @@ public class MainGame implements Screen {
 		}
 
 		collisionDetection();
-
 		stage.addActor(hero);
 		stage.addActor(fireMonster);
 
