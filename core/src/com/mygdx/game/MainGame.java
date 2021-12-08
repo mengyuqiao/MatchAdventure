@@ -93,10 +93,10 @@ public class MainGame implements Screen {
 		upTexture = new Texture(Gdx.files.internal("upbutton.png"));
 		UpTextureRegion = new TextureRegion(upTexture);
 		upTextureRegionDrawable = new TextureRegionDrawable(UpTextureRegion);
-		leftTexture = new Texture(Gdx.files.internal("rightbutton.png"));
+		leftTexture = new Texture(Gdx.files.internal("leftbutton.png"));
 		leftTextureRegion = new TextureRegion(leftTexture);
 		leftTextureRegionDrawable = new TextureRegionDrawable(leftTextureRegion);
-		rightTexture = new Texture(Gdx.files.internal("leftbutton.png"));
+		rightTexture = new Texture(Gdx.files.internal("rightbutton.png"));
 		RightTextureRegion = new TextureRegion(rightTexture);
 		rightTextureRegionDrawable = new TextureRegionDrawable(RightTextureRegion);
 		Table mainTable = new Table();
@@ -115,10 +115,10 @@ public class MainGame implements Screen {
 		UP.setPosition(0, 250);
 		LEFT.getImage().setFillParent(true);
 		LEFT.setSize(250,250);
-		LEFT.setPosition(1720, 60);
+		LEFT.setPosition(1250, 50);
 		RIGHT.getImage().setFillParent(true);
 		RIGHT.setSize(250,250);
-		RIGHT.setPosition(1450, 50);
+		RIGHT.setPosition(1620, 60);
 		Shoot.setSize(150,150);
 		Shoot.setPosition(100, 150);
 

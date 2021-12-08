@@ -44,13 +44,13 @@ public class Hero extends Actor {
     }
 
     public void moveLeft(){
-        position.x += SPEED;
+        position.x -= SPEED;
         left = true;
         right = false;
     }
 
     public void moveRight(){
-        position.x -= SPEED;
+        position.x += SPEED;
         right = true;
         left = false;
     }
