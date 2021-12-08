@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,8 +24,10 @@ public class Monster extends Actor{
     Rectangle bounds = new Rectangle();
     boolean isSleeping = true;
     Texture img;
-    int flag = 1;
+    int flag = 1; //denote the direction of monster
     float distance = 0;
+    String type;
+    int r = 1;//denote the directio
 
     public Monster() {
         super();
@@ -37,18 +40,27 @@ public class Monster extends Actor{
         this.bounds.width = SIZE;
     }
 
-    public void moveAround(){
+    public String getType(){
+        return type;
+    }
+
+    public void setType(String type){
+        this.type = type;
+    }
+
+    public void fire(Attack attack){
+        distance = distance + SPEED;
         if(flag == 1){
-            distance = distance + 2f;
-            position.x = position.x + 2f;
+            position.x = position.x + SPEED;
+            attack.fire(1);
             if(distance == 50f){
                 flag = 0;
                 distance = 0;
             }
         }
         else{
-            distance = distance + 2f;
-            position.x = position.x - 2f;
+            position.x = position.x - SPEED;
+            attack.fire(0);
             if(distance == 50f){
                 flag = 1;
                 distance = 0;
@@ -56,6 +68,18 @@ public class Monster extends Actor{
         }
     }
 
+    public void shoot(Attack attack){
+        if(attack.shootRight() == 1 || attack.shootLeft() == 1){
+            Random random = new Random();
+            r = random.nextInt(2);
+        }
+        if(r == 1){
+            attack.shootRight();
+        }
+        else if(r == 0){
+            attack.shootLeft();
+        }
+    }
 
     public float getMonsterX(){
         return velocity.x;
@@ -84,7 +108,6 @@ public class Monster extends Actor{
         position.add(velocity);
         // change velocity
         if (!isSleeping) {
-            moveAround();
         }
     }
 }

@@ -7,10 +7,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.awt.Image;
+import java.util.Random;
 
 public class Hero extends Actor {
-    static final float SPEED = 20f;
-    static final float GRAVITY = 5f;
+    static final float SPEED = 2f;
+    static final float GRAVITY = 1f;
     static final float SIZE = 0.5f;
     static final float WIDTH = 32f;
     static final float HEIGHT = 32f;
@@ -19,6 +20,9 @@ public class Hero extends Actor {
     Vector2 velocity = new Vector2();
     Rectangle bounds = new Rectangle();
     boolean isJumping = false;
+    boolean left = false;
+    boolean right = true;
+    boolean onTheGround = true;
     int hp = 5;
     Texture img;
 
@@ -40,16 +44,26 @@ public class Hero extends Actor {
     }
 
     public void moveLeft(){
-        velocity.x = -SPEED;
+        position.x += SPEED;
+        left = true;
+        right = false;
     }
 
     public void moveRight(){
-        velocity.x = SPEED;
+        position.x -= SPEED;
+        right = true;
+        left = false;
     }
 
     public void moveUp(){
-        isJumping = true;
-        velocity.y = 20f;
+        velocity.y += 10;
+        if (left){
+            moveLeft();
+        }else {
+            moveRight();
+        }
+        isJumping = false;
+        onTheGround = false;
     }
 
     public boolean testDead(){
@@ -61,15 +75,31 @@ public class Hero extends Actor {
         super.draw(batch, parentAlpha);
     }
 
+    public void shoot(Attack attack){
+        if(left){
+            attack.heroshootRight();
+        }
+        else if(right){
+            attack.heroshootLeft();
+        }
+    }
+
     @Override
     public void act(float delta) {
         super.act(delta);
-        // add velocity to position
-        position.add(velocity);
         // change velocity
-        if (isJumping){
-            velocity.y -= GRAVITY;
+        if (isJumping) {
+            moveUp();
         }
-        velocity.x = 0;
+
+        // add velocity to position
+        if (!onTheGround) {
+            if (velocity.y > -2*GRAVITY){
+                velocity.y -= GRAVITY;
+            }
+        }else {
+            velocity.y = -GRAVITY;
+        }
+        position.add(velocity);
     }
 }

@@ -27,19 +27,26 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import java.awt.Event;
 import java.util.Iterator;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainGame implements Screen {
 	private Game game;
 	public static final float WORLD_WIDTH = 480;
 	public static final float WORLD_HEIGHT = 800;
 	private Button UP;
-	private Button DOWN;
+	private Button Shoot;
 	private Button LEFT;
 	private Button RIGHT;
 	private Stage stage;
 	private Hero hero;
-	private Monster monster;
+	private Monster fireMonster;
+	private Monster shooter;
+	private Attack fire;
+	private Attack bullet;
 	private TiledMap map;
+	protected Skin skin;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private Array<Rectangle> tiles = new Array<Rectangle>();
@@ -49,16 +56,15 @@ public class MainGame implements Screen {
 			return new Rectangle();
 		}
 	};
-	int flag = 0;
-	float distance = 0;
 
 	public MainGame(Game game){
 		this.game = game;
 	}
 
 	public void show() {
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-
+		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		Table mainTable = new Table();
 		mainTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		//Set table to fill stage
@@ -66,58 +72,83 @@ public class MainGame implements Screen {
 		//Set alignment of contents in the table.
 		mainTable.center();
 		Button.ButtonStyle style = new Button.ButtonStyle();
-		UP = new Button(style);
-		UP.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-			}
-		});
-		DOWN = new Button(style);
-		DOWN.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-			}
-		});
-		LEFT = new Button(style);
-		LEFT.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-			}
-		});
-		RIGHT = new Button(style);
-		RIGHT.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-			}
-		});
-
-		// load the map
-		map = new TmxMapLoader().load("matchadventure.tmx");
-		renderer = new OrthogonalTiledMapRenderer(map);
+		UP = new Button(skin);
+		LEFT = new Button(skin);
+		RIGHT = new Button(skin);
+		Shoot = new Button(skin);
+		UP.setSize(150,150);
+		UP.setPosition(1600, 400);
+		LEFT.setSize(150,150);
+		LEFT.setPosition(1750, 250);
+		RIGHT.setSize(150,150);
+		RIGHT.setPosition(1450, 250);
+		Shoot.setSize(150,150);
+		Shoot.setPosition(100, 250);
 
 		// create hero
 		hero = new Hero();
 		hero.img = new Texture("Ball.png");
-		//create monster
-		monster = new Monster();
-		monster.img = new Texture("bird.png");
-		// set hero's position at the start position
-		//MapLayer game_objects = map.getLayers().get("game_objects");
-		//System.out.println("!!!!!!!!!!!!!!!!!!"+game_objects);
-		int x = 32, y = 32;
-		hero.position.set(x,y);
-		// set monster's position
-		int a = 32, b = 32;
-		monster.position.set(a,b);
-		monster.activeMonster();
 
 		// create a camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 160, 160);
 		camera.update();
 
+		// load the map
+		map = new TmxMapLoader().load("matchadventure.tmx");
+		renderer = new OrthogonalTiledMapRenderer(map);
 
-		//camera.translate(50,0);
+		//create fire monster
+		fireMonster = new Monster();
+		fireMonster.setType("fire");
+		fireMonster.img = new Texture("bird.png");
+		//create shooter
+		shooter = new Monster();
+		shooter.img = new Texture("bird.png");
+		shooter.setType("shooter");
+
+		//create fire
+		fire = new Attack();
+		fire.img = new Texture("fire.jpg");
+		//create bullet
+		bullet = new Attack();
+		bullet.img = new Texture("fire.jpg");
+
+
+		// set hero's position at the start position
+		int x = 32, y = 32;
+		hero.position.set(x,y);
+		UP.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				hero.moveUp();
+//				if (hero.left){
+//					camera.translate(+2, 0);
+//				}else {
+//					camera.translate(-2, 0);
+//				}
+			}
+		});
+		Shoot.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				bullet.position.set(hero.position.x+10,hero.position.y+20);
+			}
+		});
+		//set monster's position
+		int a = 32, b = 32;
+		fireMonster.position.set(a,b);
+		fire.position.set(a+30,b+20);
+		fireMonster.activeMonster();
+		int c = 50, d = 32;
+		shooter.position.set(c,d);
+		bullet.position.set(c,d+20);
+		shooter.activeMonster();
+		stage.addActor(UP);
+		stage.addActor(LEFT);
+		stage.addActor(RIGHT);
+		stage.addActor(Shoot);
+
 	}
 
 
@@ -129,24 +160,53 @@ public class MainGame implements Screen {
 		ScreenUtils.clear(0.7f, 0.7f, 1.0f, 1);
 
 		// let the camera follow the koala, x-axis only
+		camera.position.set(hero.position.x + 60, hero.position.y + 60, 0);
 		camera.update();
 
 		// set the TiledMapRenderer view based on what the
 		// camera sees, and render the map
 		renderer.setView(camera);
 		renderer.render();
+		if(LEFT.isPressed()){
+//			camera.translate(+2,0);
+			hero.moveLeft();
+			hero.left = true;
+			hero.right = false;
+		}
+		if(RIGHT.isPressed()){
+//			camera.translate(-2,0);
+			hero.moveRight();
+			hero.right = true;
+			hero.left = false;
+		}
 
+		collisionDetection();
 
-		// render the ball
+		stage.addActor(hero);
+
+		// render the ball,firemonster,shooter
 		Batch batch = renderer.getBatch();
-		monster.position.add(monster.velocity);
-		Event velocity;
-		camera.translate(monster.velocity.x,0);
 		batch.begin();
 		batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
-		batch.draw(monster.img,monster.position.x,monster.position.y,Monster.WIDTH,Monster.HEIGHT);
+		batch.draw(fireMonster.img,fireMonster.position.x,fireMonster.position.y,Monster.WIDTH,
+				Monster.HEIGHT);
+		batch.draw(shooter.img,shooter.position.x,shooter.position.y,Monster.WIDTH,Monster
+				.HEIGHT);
+
+
+		for(int i = 0 ;i < 3; i++){
+			batch.draw(fire.img,fire.position.x + i*5,fire.position.y ,fire.WIDTH,
+					fire.HEIGHT);
+		}
+		batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
+					bullet.HEIGHT);
+
 		batch.end();
-		monster.act(delta);
+		fireMonster.fire(fire);
+		shooter.shoot(bullet);
+		hero.shoot(bullet);
+		stage.act();
+		stage.draw();
 	}
 
 	@Override
@@ -194,18 +254,23 @@ public class MainGame implements Screen {
 		for (Rectangle tile : tiles) {
 			if (heroRec.overlaps(tile)) {
 				if (heroRec.x + heroRec.width > tile.x && hero.velocity.x > 0){
-					heroRec.x -= hero.velocity.x;
+					heroRec.x = tile.x - heroRec.width;
+					hero.position.x = tile.x - heroRec.width;
 					hero.velocity.x = 0;
 				}else if(heroRec.x < tile.x + tile.width && hero.velocity.x < 0){
-					heroRec.x -= hero.velocity.x;
+					heroRec.x = tile.x + tile.width;
+					hero.position.x = tile.x + tile.width;
 					hero.velocity.x = 0;
 				}
 				else if (heroRec.y + heroRec.height > tile.y && hero.velocity.y > 0){
-					heroRec.y -= hero.velocity.y;
+					heroRec.y = tile.y - heroRec.height;
+					hero.position.y = tile.y - heroRec.height;
 					hero.velocity.y = 0;
 				}else if(heroRec.y < tile.y + tile.height && hero.velocity.y < 0){
-					heroRec.y -= hero.velocity.y;
+					heroRec.y = tile.y + tile.height;
+					hero.position.y = tile.y + tile.height;
 					hero.velocity.y = 0;
+					hero.onTheGround = true;
 				}
 			}
 		}
@@ -243,7 +308,7 @@ public class MainGame implements Screen {
 	}
 
 	public void heroMoveLeft(){
-		camera.translate(20, 0);
+		camera.translate(-20, 0);
 		hero.moveLeft();
 	}
 }
