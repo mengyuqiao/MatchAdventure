@@ -22,7 +22,7 @@ public class Monster extends Actor{
     Vector2 position = new Vector2();
     Vector2 velocity = new Vector2();
     Rectangle bounds = new Rectangle();
-    boolean isSleeping = true;
+    boolean isDead = true;
     Texture img;
     int flag = 1; //denote the direction of monster
     float distance = 0;
@@ -94,7 +94,10 @@ public class Monster extends Actor{
         velocity.y = y;
     }
     public void activeMonster(){
-        isSleeping = false;
+        isDead= false;
+    }
+    public void setDead(){
+        isDead = true;
     }
     public void attack(){ }
     @Override
@@ -107,7 +110,7 @@ public class Monster extends Actor{
         // add velocity to position
         position.add(velocity);
         // change velocity
-        if (!isSleeping) {
+        if (!isDead) {
         }
     }
 }

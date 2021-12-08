@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -101,11 +102,11 @@ public class MainGame implements Screen {
 		//create fire monster
 		fireMonster = new Monster();
 		fireMonster.setType("fire");
-		fireMonster.img = new Texture("bird.png");
+		fireMonster.img = new Texture("fairy.png");
 		//create shooter
-		shooter = new Monster();
-		shooter.img = new Texture("bird.png");
-		shooter.setType("shooter");
+		//shooter = new Monster();
+		//shooter.img = new Texture("bird.png");
+		//shooter.setType("shooter");
 
 		//create fire
 		fire = new Attack();
@@ -136,14 +137,13 @@ public class MainGame implements Screen {
 			}
 		});
 		//set monster's position
-		int a = 32, b = 32;
-		fireMonster.position.set(a,b);
-		fire.position.set(a+30,b+20);
+		fireMonster.position.set(400,120);
+		fire.position.set(430,135);
 		fireMonster.activeMonster();
 		int c = 50, d = 32;
-		shooter.position.set(c,d);
+		//shooter.position.set(c,d);
 		bullet.position.set(c,d+20);
-		shooter.activeMonster();
+		//shooter.activeMonster();
 		stage.addActor(UP);
 		stage.addActor(LEFT);
 		stage.addActor(RIGHT);
@@ -183,6 +183,7 @@ public class MainGame implements Screen {
 		collisionDetection();
 
 		stage.addActor(hero);
+		stage.addActor(fireMonster);
 
 		// render the ball,firemonster,shooter
 		Batch batch = renderer.getBatch();
@@ -190,21 +191,24 @@ public class MainGame implements Screen {
 		batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
 		batch.draw(fireMonster.img,fireMonster.position.x,fireMonster.position.y,Monster.WIDTH,
 				Monster.HEIGHT);
-		batch.draw(shooter.img,shooter.position.x,shooter.position.y,Monster.WIDTH,Monster
-				.HEIGHT);
+		//batch.draw(shooter.img,shooter.position.x,shooter.position.y,Monster.WIDTH,Monster
+		//.HEIGHT);
 
 
 		for(int i = 0 ;i < 3; i++){
 			batch.draw(fire.img,fire.position.x + i*5,fire.position.y ,fire.WIDTH,
 					fire.HEIGHT);
 		}
-		batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
-					bullet.HEIGHT);
+
+		//batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
+		//		bullet.HEIGHT);
 
 		batch.end();
 		fireMonster.fire(fire);
-		shooter.shoot(bullet);
-		hero.shoot(bullet);
+		heroDestroyDetection();
+		//shooter.shoot(bullet);
+
+
 		stage.act();
 		stage.draw();
 	}
@@ -233,6 +237,27 @@ public class MainGame implements Screen {
 	@Override
 	public void dispose() {
 
+	}
+	public void heroDestroyDetection(){
+		Rectangle heroRec = new Rectangle();
+		Rectangle fireRec = new Rectangle();
+		heroRec.set(hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+		fireRec.set(fire.position.x + 10,fire.position.y,Attack.WIDTH,Attack.HEIGHT);
+		if (Intersector.overlaps(heroRec,fireRec)){
+			Gdx.app.log("hit", "yes!");
+			hero.getHit();
+		}
+	}
+
+	public void monsterDestroyDetection(){
+		Rectangle monsterRec = new Rectangle();
+		Rectangle bulletRec = new Rectangle();
+		monsterRec.set(fireMonster.position.x, fireMonster.position.y, fireMonster.WIDTH,
+				fireMonster.HEIGHT);
+		bulletRec.set(bullet.position.x,bullet.position.y,bullet.WIDTH,bullet.HEIGHT);
+		if (Intersector.overlaps(monsterRec,bulletRec)){
+			fireMonster.setDead();
+		}
 	}
 
 	public void collisionDetection(){
