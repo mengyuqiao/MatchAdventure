@@ -91,13 +91,14 @@ public class MainScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				//Gdx.app.exit();
 				game.setScreen(new WinScreen(game));
+				bgm.dispose();
 			}
 		});
 
 		//Add buttons to table
 		mainTable.add(nameLabel).size(width, unit).padBottom(0).row();
-		mainTable.add(playButton).size(width, unit).padBottom(-100).row();
-		mainTable.add(exitButton).size(width, unit).padBottom(10).row();
+		mainTable.add(playButton).size(width, unit).padBottom(0).row();
+		mainTable.add(exitButton).size(width, unit).padBottom(0).row();
 
 		//Add table to stage
 		stage.addActor(mainTable);

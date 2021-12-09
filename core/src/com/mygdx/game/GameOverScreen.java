@@ -85,9 +85,9 @@ public class GameOverScreen implements Screen {
 		});
 		table.add(gameOverLabel).expandX();
 		table.row();
-		table.add(playAgainLabel).expandX().padTop(30);
+		table.add(playAgainLabel).expandX().padTop(70);
 		table.row();
-		table.add(ExitLabel).expandX().padTop(30);
+		table.add(ExitLabel).expandX().padTop(70);
 		stage.addActor(table);
 	}
 
