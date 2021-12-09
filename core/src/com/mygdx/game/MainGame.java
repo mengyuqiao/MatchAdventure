@@ -210,7 +210,7 @@ public class MainGame implements Screen {
 		stage.getBatch().draw(background, 2100-hero.position.x, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		stage.getBatch().end();
 		// let the camera follow the hero
-		camera.position.set(hero.position.x + 8, hero.position.y + 60, 0);
+		camera.position.set(hero.position.x + 20, hero.position.y + 60, 0);
 		camera.update();
 
 		// set the TiledMapRenderer view based on what the
@@ -272,6 +272,9 @@ public class MainGame implements Screen {
 		heroDestroyDetection(fire2);
 		//shooter.shoot(bullet);
 
+		if(hero.testDead()){
+			game.setScreen(new GameOverScreen(game));
+		}
 
 		stage.act();
 		stage.draw();

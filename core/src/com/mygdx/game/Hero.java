@@ -32,12 +32,12 @@ public class Hero extends Actor {
     TextureRegion reg;
     float stateTime;
     boolean isAttacking = false;
+    int immuneTime = 0;
 
     public Hero() {
         super();
         attackSheet = new Texture(Gdx.files.internal("32x32_matchfire.png"));
         TextureRegion[][] tmp = TextureRegion.split(attackSheet, attackSheet.getWidth() / 6, attackSheet.getHeight());
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + tmp[0].length);
         TextureRegion[] attackFrames = new TextureRegion[6];
         int cnt = 0;
         for (TextureRegion[] regions : tmp){
@@ -55,7 +55,10 @@ public class Hero extends Actor {
     }
 
     public void getHit(){
-        hp--;
+        if (immuneTime == 0){
+            immuneTime = 80;
+            hp--;
+        }
     }
 
     public void moveLeft(){
@@ -113,6 +116,10 @@ public class Hero extends Actor {
         if (attackAnimation.isAnimationFinished(stateTime)){
             isAttacking = false;
             stateTime = 0;
+        }
+
+        if (immuneTime != 0){
+            immuneTime--;
         }
 
         // add velocity to position
