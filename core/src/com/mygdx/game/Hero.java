@@ -14,7 +14,7 @@ import java.awt.Image;
 import java.util.Random;
 
 public class Hero extends Actor {
-    static final float SPEED = 2f;
+    static final float SPEED = 1f;
     static final float GRAVITY = 1f;
     static final float WIDTH = 32f;
     static final float HEIGHT = 32f;

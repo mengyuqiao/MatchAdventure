@@ -27,9 +27,8 @@ public class Monster extends Actor{
     int flag = 1; //denote the direction of monster
     float distanceLeft = 0;
     float distanceRight = 0;
-    String id;
-
-    int r = 1;//denote the directio
+    String type;
+    Attack attack;
 
     public Monster() {
         super();
@@ -42,21 +41,28 @@ public class Monster extends Actor{
         this.bounds.width = SIZE;
     }
 
-    public String getId(){
-        return id;
+    public void setAttack(Attack attack) {
+        this.attack = attack;
     }
 
-    public void setID(String id){
-        this.id = id;
+    public Attack getAttack(){
+        return attack;
     }
 
-    public int fireRight(Attack attack){
-        int draw = 0;
+    public String getType(){
+        return type;
+    }
+
+    public void setType(String type){
+        this.type = type;
+    }
+
+    public void fireRight(){
         distanceLeft = distanceLeft + SPEED;
         if(flag == 1){
             position.x = position.x + SPEED;
-            if(25f > distanceLeft && distanceLeft < 50f){
-                draw = 1;
+            if(45f > distanceLeft && distanceLeft < 50f){
+                attack.isActive = true;
                 attack.position.set(position.x + 10,position.y);
             }
             if(distanceLeft == 50f){
@@ -65,23 +71,22 @@ public class Monster extends Actor{
             }
         }
         else{
+            attack.isActive = false;
             position.x = position.x - SPEED;
             if(distanceLeft == 50f){
                 flag = 1;
                 distanceLeft = 0;
             }
         }
-        return draw;
     }
 
-    public int fireLeft(Attack attack){
-        int draw = 0;
+    public void fireLeft(){
         distanceRight = distanceRight + SPEED;
         if(flag == 1){
             position.x = position.x - SPEED;
-            if(25f > distanceRight && distanceRight < 50f){
-                draw = 1;
-                attack.position.set(position.x - 10,position.y);
+            if(45f > distanceRight && distanceRight < 50f){
+                attack.isActive = true;
+                attack.position.set(position.x - 10, position.y);
             }
             if(distanceRight == 50f){
                 flag = 0;
@@ -89,21 +94,20 @@ public class Monster extends Actor{
             }
         }
         else{
+            attack.isActive = false;
             position.x = position.x + SPEED;
             if(distanceRight == 50f){
                 flag = 1;
                 distanceRight = 0;
             }
         }
-        return draw;
     }
 
-    public void activeMonster(Attack attack){
-        attack.isActive = true;
+    public void activeMonster(){
         isDead= false;
     }
 
-    public void setDead(Attack attack){
+    public void setDead(){
         attack.isActive = false;
         isDead = true;
     }

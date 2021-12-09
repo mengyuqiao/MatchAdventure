@@ -37,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import java.awt.Event;
 import java.awt.Image;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Timer;
@@ -91,6 +92,8 @@ public class MainGame implements Screen {
 
 	int draw_left = 0;
 	int draw_right = 0;
+	private ArrayList<Monster> monsters = new ArrayList<>();
+
 	public MainGame(Game game){
 		this.game = game;
 		background = new Texture("background1.png");
@@ -159,21 +162,31 @@ public class MainGame implements Screen {
 		map = new TmxMapLoader().load("matchadventure.tmx");
 		renderer = new OrthogonalTiledMapRenderer(map);
 
-		//create fire monster
+		//create left fire monster 1
 		fireMonster = new Monster();
-		fireMonster.setID("L1");
+		fireMonster.setType("R");
 		fireMonster.img = new Texture("slime.png");
-		fireMonster2 = new Monster();
-		fireMonster2.setID("R1");
-		fireMonster2.img = new Texture("antislime.png");
-
-		//create fire
+		fireMonster.position.set(400,130);
+		fireMonster.activeMonster();
+		monsters.add(fireMonster);
 		fire = new Attack();
 		fire.img = new Texture("fire.png");
-		fire.setID("L1");
+		fire.setType("R");
+		fireMonster.setAttack(fire);
+
+		//create right fire monster 2
+		fireMonster2 = new Monster();
+		fireMonster2.setType("L");
+		fireMonster2.img = new Texture("antislime.png");
+		fireMonster2.position.set(900,130);
+		fireMonster2.activeMonster();
+		monsters.add(fireMonster2);
 		fire2 = new Attack();
 		fire2.img = new Texture("antifire.png");
-		fire2.setID("R1");
+		fire2.setType("L");
+		fireMonster2.setAttack(fire2);
+
+
 		fireBall = new Attack();
 		fireBall.img = new Texture("antifireball.png");
 		fireBall2 = new Attack();
@@ -194,24 +207,21 @@ public class MainGame implements Screen {
 				hero.isAttacking = true;
 			}
 		});
-		//set monster's position
-		fireMonster.position.set(400,130);
-		fire.position.set(410,130);
-		fireMonster.activeMonster(fire);
-		fireMonster2.position.set(900,130);
-		fire2.position.set(885,130);
-		fireMonster2.activeMonster(fire2);
-		//shooter.activeMonster();
+
 		Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.YELLOW);
 		hp = new Label(String.format("HP:%d",hero.hp), font);
 		hp.setFontScale(4,4);
 		hp.setX(Gdx.graphics.getWidth()-300);
 		hp.setY(Gdx.graphics.getHeight()-100);
+
+
+		//shooter.activeMonster();
 		stage.addActor(UP);
 		stage.addActor(LEFT);
 		stage.addActor(RIGHT);
 		stage.addActor(Shoot);
 		stage.addActor(hp);
+
 		portalTexture = new Texture("portal.png");
 	}
 
@@ -243,7 +253,7 @@ public class MainGame implements Screen {
 		if(Gdx.input.isKeyPressed(Input.Keys.UP)){
 			hero.moveLeft();
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+		if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
 			hero.isAttacking = true;
 		}
 		if(LEFT.isPressed()){
@@ -252,8 +262,10 @@ public class MainGame implements Screen {
 		if(RIGHT.isPressed()){
 			hero.moveRight();
 		}
+
 		hp.setText(String.format("HP:%d",hero.hp));
 		collisionDetection();
+
 		stage.addActor(hero);
 		stage.addActor(fireMonster);
 		stage.act();
@@ -273,8 +285,9 @@ public class MainGame implements Screen {
 					batch.draw(fireBall2.img,fireBall2.position.x,fireBall2.position.y,Attack.WIDTH,
 							Attack.HEIGHT);
 				}
-				monsterDestroyDetection(fireBall2,fireMonster2,fire2);
-				monsterDestroyDetection(fireBall2,fireMonster,fire);
+				for(Monster monster: monsters){
+					monsterDestroyDetection(fireBall2,monster);
+				}
 			}else {
 				fireBall.position.set(hero.position.x - 15, hero.position.y + 10);
 				batch.draw(fireBall.img,fireBall.position.x,fireBall.position.y,Attack.WIDTH,
@@ -285,8 +298,9 @@ public class MainGame implements Screen {
 					batch.draw(fireBall.img,fireBall.position.x,fireBall.position.y,Attack.WIDTH,
 							Attack.HEIGHT);
 				}
-				monsterDestroyDetection(fireBall,fireMonster2,fire2);
-				monsterDestroyDetection(fireBall,fireMonster,fire);
+				for(Monster monster: monsters){
+					monsterDestroyDetection(fireBall,monster);
+				}
 			}
 		}else {
 			if (hero.right){
@@ -296,38 +310,37 @@ public class MainGame implements Screen {
 			}
 
 		}
-		if(!fireMonster.isDead){
-			batch.draw(fireMonster.img,fireMonster.position.x,fireMonster.position.y,Monster.WIDTH,
-					Monster.HEIGHT);
-			draw_left = fireMonster.fireRight(fire);
-			heroDestroyDetection(fire);
-		}
-		if(!fireMonster2.isDead){
-			batch.draw(fireMonster2.img,fireMonster2.position.x,fireMonster2.position.y,Monster.WIDTH,
-					Monster.HEIGHT);
-			draw_right = fireMonster2.fireLeft(fire2);
-			heroDestroyDetection(fire2);
-		}
-		//batch.draw(shooter.img,shooter.position.x,shooter.position.y,Monster.WIDTH,Monster
-		//.HEIGHT);
-		if(draw_left == 1 && fire.isActive){
-			batch.draw(fire.img,fire.position.x,fire.position.y ,fire.WIDTH,
-					fire.HEIGHT);
-		}
-		if (draw_right == 1 && fire2.isActive){
-			batch.draw(fire2.img,fire2.position.x,fire2.position.y ,fire.WIDTH,
-					fire.HEIGHT);
+
+		for(Monster fireMonster : monsters) {
+			if (!fireMonster.isDead) {
+				batch.draw(fireMonster.img, fireMonster.position.x, fireMonster.position.y, Monster.WIDTH,
+						Monster.HEIGHT);
+				if(fireMonster.getType() == "R"){
+					fireMonster.fireRight();
+				}
+				else{
+					fireMonster.fireLeft();
+				}
+				if (fireMonster.getAttack().isActive) {
+					batch.draw(fireMonster.getAttack().img, fireMonster.getAttack().position.x,
+							fireMonster.getAttack().position.y,
+							fire.WIDTH,
+							fire.HEIGHT);
+				}
+				heroDestroyDetection(fireMonster.getAttack());
+			}
 		}
 
 		//batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
 		//		bullet.HEIGHT);
-		batch.draw(portalTexture, 880, 416, 40, 48);
+		batch.draw(portalTexture, 1792, 800, 48, 48);
 
 		batch.end();
 		if(hero.testDead()){
 			game.setScreen(new GameOverScreen(game));
 			bgm.dispose();
 		}
+
 	}
 
 	@Override
@@ -355,6 +368,7 @@ public class MainGame implements Screen {
 	public void dispose() {
 
 	}
+
 	public void heroDestroyDetection(Attack fire){
 		Rectangle heroRec = new Rectangle();
 		Rectangle fireRec = new Rectangle();
@@ -367,7 +381,7 @@ public class MainGame implements Screen {
 		}
 	}
 
-	public void monsterDestroyDetection(Attack fireball, Monster fireMonster, Attack fire){
+	public void monsterDestroyDetection(Attack fireball, Monster fireMonster){
 		Rectangle monsterRec = new Rectangle();
 		Rectangle bulletRec = new Rectangle();
 		monsterRec.set(fireMonster.position.x, fireMonster.position.y, fireMonster.WIDTH,
@@ -375,7 +389,7 @@ public class MainGame implements Screen {
 		bulletRec.set(fireball.position.x,fireball.position.y,fireball.WIDTH,fireball.HEIGHT);
 		if (Intersector.overlaps(monsterRec,bulletRec)){
 			Gdx.app.log("hit monster", "yes!");
-			fireMonster.setDead(fire);
+			fireMonster.setDead();
 		}
 	}
 
@@ -499,10 +513,6 @@ public class MainGame implements Screen {
 			hero.position.y = Gdx.graphics.getHeight()- Hero.HEIGHT;
 		}else if (hero.position.y < 0){
 			hero.position.y = 0;
-		}
-
-		if (hero.position.x < 880+40 && hero.position.x > 880-32 && hero.position.y < 400+48 && hero.position.y > 400-32){
-			game.setScreen(new WinScreen(game));
 		}
 	}
 
