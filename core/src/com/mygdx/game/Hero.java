@@ -53,18 +53,15 @@ public class Hero extends Actor {
         img = imgs[0];
 
         Texture attackSheet = new Texture(Gdx.files.internal("32x32_matchfire.png"));
-        Texture attackSheet2 = new Texture(Gdx.files.internal("32x32_matchfire.png"));
+        Texture attackSheet2 = new Texture(Gdx.files.internal("32x32_matchfire2.png"));
         TextureRegion[][] tmp1 = TextureRegion.split(attackSheet, attackSheet.getWidth() / 6, attackSheet.getHeight());
         TextureRegion[][] tmp2 = TextureRegion.split(attackSheet2, attackSheet2.getWidth() / 6, attackSheet2.getHeight());
         TextureRegion[] attackFrames = new TextureRegion[6];
         TextureRegion[] flipAttackFrames = new TextureRegion[6];
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + (attackFrames==flipAttackFrames));
         int cnt = 0;
         for (TextureRegion[] regions : tmp1){
             for (TextureRegion region : regions){
                 attackFrames[cnt++] = region;
-//                region.flip(true, false);
-//                flipAttackFrames[cnt++] = region;
             }
         }
         int cnt2 = 0;
@@ -76,6 +73,8 @@ public class Hero extends Actor {
         }
         attackAnimation = new Animation<>(0.15f, attackFrames);
         flipAttackAnimation = new Animation<>(0.15f, flipAttackFrames);
+        System.out.println(flipAttackAnimation);
+        System.out.println(attackAnimation);
         stateTime = 0f;
         stateTime2 = 0f;
         reg = attackAnimation.getKeyFrame(stateTime);
@@ -147,12 +146,12 @@ public class Hero extends Actor {
         stateTime += delta;
         stateTime2 += delta;
         reg = attackAnimation.getKeyFrame(stateTime,false);
-        flipReg = attackAnimation.getKeyFrame(stateTime2,false);
+        flipReg = flipAttackAnimation.getKeyFrame(stateTime2,false);
         if (attackAnimation.isAnimationFinished(stateTime)){
             isAttacking = false;
             stateTime = 0;
         }
-        if (attackAnimation.isAnimationFinished(stateTime2)){
+        if (flipAttackAnimation.isAnimationFinished(stateTime2)){
             isAttacking = false;
             stateTime2 = 0;
         }
