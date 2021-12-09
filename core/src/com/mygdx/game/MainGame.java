@@ -100,6 +100,7 @@ public class MainGame implements Screen {
 	private ArrayList<Monster> monsters = new ArrayList<>();
 	private ArrayList<Texture> fairys = new ArrayList<>();
 	boolean flag = false;
+	boolean flag1 = false;
 	public MainGame(Game game){
 		this.game = game;
 		background = new Texture("background1.png");
@@ -233,6 +234,7 @@ public class MainGame implements Screen {
 
 		//create fairy
 		fairy1 = new Texture("fairy.png");
+		fairy2 = new Texture("fairy.png");
 		fairys.add(fairy1);
 
 		// set hero's position at the start position and press attack to shoot
@@ -285,8 +287,10 @@ public class MainGame implements Screen {
 		// camera sees, and render the map
 		renderer.setView(camera);
 		renderer.render();
+		//keyboard control
 		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
-			bgm1.play();hero.moveUp();
+			bgm1.play();
+			hero.moveUp();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
 			hero.moveRight();
@@ -297,13 +301,14 @@ public class MainGame implements Screen {
 		if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
 			hero.isAttacking = true;
 		}
+		//button control
 		if(LEFT.isPressed()){
 			hero.moveLeft();
 		}
 		if(RIGHT.isPressed()){
 			hero.moveRight();
 		}
-
+		//show hero remain hp
 		hp.setText(String.format("HP:%d",hero.hp));
 		collisionDetection();
 
@@ -314,10 +319,16 @@ public class MainGame implements Screen {
 		Batch batch = renderer.getBatch();
 		batch.begin();
 		Rectangle fairyRec = new Rectangle();
+		Rectangle fairyRec1 = new Rectangle();
 		if(flag == false){
 			// produce a fairy1
 			fairyRec.set(350,130,fairy1.getWidth(),fairy1.getWidth());
 			batch.draw(fairy1,350,130,fairy1.getWidth(),fairy1.getHeight());
+		}
+		if(flag1 == false){
+			// produce a fairy2
+			fairyRec1.set(350,416,fairy2.getWidth(),fairy2.getWidth());
+			batch.draw(fairy2,350,416,fairy2.getWidth(),fairy2.getHeight());
 		}
 		//attack mode of hero
 		if (hero.isAttacking){
@@ -361,9 +372,15 @@ public class MainGame implements Screen {
 			//recovery mechanism
 			Rectangle heroRec = new Rectangle();
 			heroRec.set(hero.position.x,hero.position.y,Hero.WIDTH,Hero.HEIGHT);
+			//hit fairy1
 			if(Intersector.overlaps(fairyRec,heroRec)){
 				hero.hp++;
 				flag = true;
+			}
+			//hit fairy2
+			if(Intersector.overlaps(fairyRec1,heroRec)){
+				hero.hp++;
+				flag1 = true;
 			}
 
 		}
@@ -394,11 +411,12 @@ public class MainGame implements Screen {
 		batch.draw(portalTexture, 880, 416, 40, 48);
 
 		batch.end();
+		//hero die game over
 		if(hero.testDead()){
 			game.setScreen(new GameOverScreen(game));
 			bgm.dispose();
 		}
-
+		//hero win
 		if (hero.position.x < 880+40 && hero.position.x > 880-32 && hero.position.y < 400+48 && hero.position.y > 400-32){
 			game.setScreen(new WinScreen(game));
 			bgm.dispose();
@@ -541,6 +559,7 @@ public class MainGame implements Screen {
 		if (hero.position.y > Gdx.graphics.getHeight()- Hero.HEIGHT){
 			hero.position.y = Gdx.graphics.getHeight()- Hero.HEIGHT;
 		}else if (hero.position.y < 0){
+			//hero y < 0 then die
 			game.setScreen(new GameOverScreen(game));
 			bgm.dispose();
 		}

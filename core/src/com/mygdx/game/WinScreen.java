@@ -35,6 +35,7 @@ public class WinScreen implements Screen {
 	private Music bgm1;
 	private Texture background;
 	private int x;
+	//win page
 	public WinScreen(Game game){
 		this.game = game;
 		atlas = new TextureAtlas("uiskin.atlas");
@@ -43,6 +44,7 @@ public class WinScreen implements Screen {
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 		viewport.apply();
+		//background and bgm
 		background = new Texture("background1.png");
 		FileHandle bgmHandle1 = Gdx.files.internal("win.mp3");
 		bgm1 = Gdx.audio.newMusic(bgmHandle1);
@@ -56,6 +58,7 @@ public class WinScreen implements Screen {
 	@Override
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
+		//label with text
 		Label.LabelStyle font1 = new Label.LabelStyle(new BitmapFont(), Color.YELLOW);
 		Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
@@ -68,6 +71,7 @@ public class WinScreen implements Screen {
 		nextlevelLabel.setFontScale(4,4);
 		ExitLabel = new Label("Exit", font);
 		ExitLabel.setFontScale(4,4);
+		//click label
 		nextlevelLabel.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -94,6 +98,7 @@ public class WinScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		//move label from right to center
 		if(x>Gdx.graphics.getWidth()/2.5) {
 			x = x - 10;
 			winLabel.setX(x);

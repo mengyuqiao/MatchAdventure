@@ -36,7 +36,7 @@ public class GameOverScreen implements Screen {
 	protected Skin skin;
 	private Label ExitLabel;
 	private Music bgm1;
-
+	//game over page
 	public GameOverScreen(Game game){
 		this.game = game;
 		atlas = new TextureAtlas("uiskin.atlas");
@@ -45,6 +45,7 @@ public class GameOverScreen implements Screen {
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 		viewport.apply();
+		//bgm
 		FileHandle bgmHandle1 = Gdx.files.internal("gameover.mp3");
 		bgm1 = Gdx.audio.newMusic(bgmHandle1);
 		bgm1.play();
@@ -56,6 +57,7 @@ public class GameOverScreen implements Screen {
 
 	@Override
 	public void show() {
+		//show label with text
 		Gdx.input.setInputProcessor(stage);
 		Label.LabelStyle font1 = new Label.LabelStyle(new BitmapFont(), Color.RED);
 		Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
@@ -69,6 +71,7 @@ public class GameOverScreen implements Screen {
 		playAgainLabel.setFontScale(4,4);
 		ExitLabel = new Label("Menu Screen", font);
 		ExitLabel.setFontScale(4,4);
+		//click label
 		playAgainLabel.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

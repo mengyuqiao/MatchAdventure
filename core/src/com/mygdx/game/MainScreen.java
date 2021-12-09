@@ -73,7 +73,7 @@ public class MainScreen implements Screen {
 		float width = playButton.getWidth() * scale;
 
 
-		nameLabel.setFontScale(10, 10);
+		nameLabel.setFontScale(9, 9);
 		playButton.setFontScale(6, 6);
 		exitButton.setFontScale(6, 6);
 
