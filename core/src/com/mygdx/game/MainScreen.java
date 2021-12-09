@@ -90,7 +90,7 @@ public class MainScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				//Gdx.app.exit();
-				game.setScreen(new GameOverScreen(game));
+				game.setScreen(new WinScreen(game));
 			}
 		});
 
