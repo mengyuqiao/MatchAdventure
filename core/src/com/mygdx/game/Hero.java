@@ -123,15 +123,6 @@ public class Hero extends Actor {
         super.draw(batch, parentAlpha);
     }
 
-    public void shoot(Attack attack){
-        if(left){
-            attack.heroshootRight();
-        }
-        else if(right){
-            attack.heroshootLeft();
-        }
-    }
-
     @Override
     public void act(float delta) {
         super.act(delta);

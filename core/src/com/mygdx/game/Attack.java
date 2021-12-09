@@ -18,66 +18,29 @@ public class Attack extends Actor {
     Vector2 velocity = new Vector2();
 
     Texture img;
-    float distance = 0;
-    int flag = 0;
-    String type;
-    String active;
+    String id;
     boolean isActive = false;
 
     public Attack() {
         super();
     }
 
-    public String getType(){
-        return type;
+    public String getID(){
+        return id;
     }
 
-    public void setType(String type){
-        this.type = type;
+    public void setID(String id){
+        this.id = id;
     }
 
-
-
-    public int shootRight(){
-        position.x = position.x + SPEED;
-        distance = distance + 2.5f;
-        if(distance > 400f){
-            position.x = 50;
-            distance = 0;
-            return 1;
-        }
-        return 0;
-    }
-    public int heroshootRight(){
-        position.x = position.x + SPEED;
-        distance = distance + 2.5f;
-        if(distance > 400f){
-            position.x = 50;
-            distance = 0;
-            return 1;
-        }
-        return 0;
+    public void shootRight(){
+        position.x = position.x + 20f;
+        position.y = position.y - 5f;
     }
 
-    public int heroshootLeft(){
-        position.x = position.x - SPEED;
-        distance = distance + 2.5f;
-        if(distance > 500f){
-            position.x = 50;
-            distance = 0;
-            return 1;
-        }
-        return 0;
-    }
-    public int shootLeft(){
-        position.x = position.x - SPEED;
-        distance = distance + 2.5f;
-        if(distance > 500f){
-            position.x = 50;
-            distance = 0;
-            return 1;
-        }
-        return 0;
+    public void shootLeft(){
+        position.x = position.x - 20f;
+        position.y = position.y - 5f;
     }
 
     @Override

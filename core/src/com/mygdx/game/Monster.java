@@ -27,7 +27,7 @@ public class Monster extends Actor{
     int flag = 1; //denote the direction of monster
     float distanceLeft = 0;
     float distanceRight = 0;
-    int id;
+    String id;
 
     int r = 1;//denote the directio
 
@@ -42,12 +42,12 @@ public class Monster extends Actor{
         this.bounds.width = SIZE;
     }
 
-    public int getId(){
+    public String getId(){
         return id;
     }
 
-    public void setID(int id){
-        this.id = 1;
+    public void setID(String id){
+        this.id = id;
     }
 
     public int fireRight(Attack attack){
@@ -96,21 +96,6 @@ public class Monster extends Actor{
             }
         }
         return draw;
-    }
-
-
-
-    public void shoot(Attack attack){
-        if(attack.shootRight() == 1 || attack.shootLeft() == 1){
-            Random random = new Random();
-            r = random.nextInt(2);
-        }
-        if(r == 1){
-            attack.shootRight();
-        }
-        else if(r == 0){
-            attack.shootLeft();
-        }
     }
 
     public void activeMonster(Attack attack){
