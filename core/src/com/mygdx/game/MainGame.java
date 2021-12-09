@@ -72,6 +72,8 @@ public class MainGame implements Screen {
 	private OrthographicCamera camera;
 	private Texture background;
 	private Music bgm;
+	private Music bgm1;
+	private Music bgm2;
 	private Array<Rectangle> tiles = new Array<Rectangle>();
 	private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 		@Override
@@ -89,6 +91,10 @@ public class MainGame implements Screen {
 		bgm = Gdx.audio.newMusic(bgmHandle);
 		bgm.setLooping(true);
 		bgm.play();
+		FileHandle bgmHandle1 = Gdx.files.internal("stomp.wav");
+		bgm1 = Gdx.audio.newMusic(bgmHandle1);
+		FileHandle bgmHandle2 = Gdx.files.internal("bump.wav");
+		bgm2 = Gdx.audio.newMusic(bgmHandle2);
 	}
 
 	public void show() {
@@ -173,7 +179,7 @@ public class MainGame implements Screen {
 		UP.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				hero.moveUp();
+				bgm1.play();hero.moveUp();
 			}
 		});
 		Shoot.addListener(new ClickListener(){
@@ -271,11 +277,10 @@ public class MainGame implements Screen {
 		heroDestroyDetection(fire);
 		heroDestroyDetection(fire2);
 		//shooter.shoot(bullet);
-
 		if(hero.testDead()){
 			game.setScreen(new GameOverScreen(game));
+			bgm.dispose();
 		}
-
 		stage.act();
 		stage.draw();
 	}
@@ -311,6 +316,7 @@ public class MainGame implements Screen {
 		heroRec.set(hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
 		fireRec.set(fire.position.x,fire.position.y,Attack.WIDTH,Attack.HEIGHT);
 		if (Intersector.overlaps(heroRec,fireRec)){
+			bgm2.play();
 			Gdx.app.log("hit", "yes!");
 			hero.getHit();
 		}
