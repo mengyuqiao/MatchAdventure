@@ -40,6 +40,7 @@ public class Hero extends Actor {
 
     public Hero() {
         super();
+        // initialized attack animations
         Texture image = new Texture("32x32_match.png");
         Texture temp = new Texture("32x32_match_immune.png");
         imgs = new Texture[2];
@@ -51,7 +52,6 @@ public class Hero extends Actor {
         tempRegion.flip(false, true);
         flipImgs[1] = tempRegion.getTexture();
         img = imgs[0];
-
         Texture attackSheet = new Texture(Gdx.files.internal("32x32_matchfire.png"));
         Texture attackSheet2 = new Texture(Gdx.files.internal("32x32_matchfire2.png"));
         TextureRegion[][] tmp1 = TextureRegion.split(attackSheet, attackSheet.getWidth() / 6, attackSheet.getHeight());
@@ -73,8 +73,6 @@ public class Hero extends Actor {
         }
         attackAnimation = new Animation<>(0.15f, attackFrames);
         flipAttackAnimation = new Animation<>(0.15f, flipAttackFrames);
-        System.out.println(flipAttackAnimation);
-        System.out.println(attackAnimation);
         stateTime = 0f;
         stateTime2 = 0f;
         reg = attackAnimation.getKeyFrame(stateTime);
@@ -106,6 +104,7 @@ public class Hero extends Actor {
     }
 
     public void moveUp(){
+        // limit jump twice before reaching the ground
         if (jumpTime != 0){
             velocity.y += 10;
             jumpTime--;
@@ -131,6 +130,7 @@ public class Hero extends Actor {
             moveUp();
         }
 
+        // set attack animation
         attack();
         stateTime += delta;
         stateTime2 += delta;
@@ -145,6 +145,7 @@ public class Hero extends Actor {
             stateTime2 = 0;
         }
 
+        // if hero is hit
         if (immuneTime != 0){
             immuneTime--;
             if (immuneTime % 16 == 0){

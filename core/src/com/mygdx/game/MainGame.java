@@ -59,6 +59,7 @@ public class MainGame implements Screen {
 	private Monster fireMonster3;
 	private Monster fireMonster4;
 	private Monster fireMonster5;
+	private Monster fireMonster6;
 	private Attack fire;
 	private Attack fire2;
 	private Attack fireBall;
@@ -208,15 +209,20 @@ public class MainGame implements Screen {
 		createLeftMonster(fireMonster3);
 		fireMonster3.position.set(900,225);
 
-		//create right right monster 1
+		//create right right monster 4
 		fireMonster4 = new Monster();
 		createRightMonster(fireMonster4);
 		fireMonster4.position.set(400,320);
 
-		//create left fire monster 4
+		//create left fire monster 5
 		fireMonster5 = new Monster();
 		createLeftMonster(fireMonster5);
 		fireMonster5.position.set(900,320);
+
+		//create left fire monster 6
+		fireMonster6 = new Monster();
+		createLeftMonster(fireMonster6);
+		fireMonster5.position.set(700,416);
 
 		//hero's attack
 		fireBall = new Attack();
@@ -432,33 +438,17 @@ public class MainGame implements Screen {
 		// use a rectangle to store hero's position and do the comparison
 		Rectangle heroRec = rectPool.obtain();
 		heroRec.set(hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
-		// check hero's velocity on x and y axes
-		int startX, startY, endX, endY;
-		if (hero.velocity.x < 0){
-			startX = (int)(hero.position.x + hero.velocity.x);
-			endX = (int)(hero.position.x);
-		} else{
-			startX = (int)(hero.position.x + Hero.WIDTH);
-			endX = (int)(hero.position.x + Hero.WIDTH + hero.velocity.x);
-		}
-		if (hero.velocity.y < 0){
-			startY = (int)(hero.position.y + hero.velocity.y);
-			endY = (int)(hero.position.y);
-		} else{
-			startY = (int)(hero.position.y + Hero.HEIGHT);
-			endY = (int)(hero.position.y + Hero.HEIGHT + hero.velocity.y);
-		}
 
-		// get solid_layer rects
-		getSolidTiles(startX, startY, endX, endY, tiles);
 		// move hero's rect
 		heroRec.x += hero.velocity.x;
 		heroRec.y += hero.velocity.y;
+
 		// check collision
 		hero.onTheGround = false;
 		boolean collisionX = false, collisionY = false;
 		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("solid_layer");
 
+		// check x collision
 		if (hero.velocity.x < 0){
 			// top left
 			collisionX = layer.getCell((int)(heroRec.getX()/16),(int)((heroRec.getY() + Hero.HEIGHT)/16))!=null;
@@ -480,12 +470,13 @@ public class MainGame implements Screen {
 				collisionX = layer.getCell((int)(heroRec.getX() + Hero.WIDTH)/16,(int)((heroRec.getY()+ Hero.HEIGHT*3/4)/16))!=null;
 			}
 		}
-
+		// x collision is true: move back
 		if (collisionX){
 			heroRec.x -= hero.velocity.x;
 			hero.velocity.x = 0;
 		}
 
+		// check y collision
 		if (hero.velocity.y <= 0){
 			// top left
 //			collisionY = layer.getCell((int)((heroRec.getX()+ Hero.WIDTH)/16),(int)((heroRec.getY())/16))!=null;
@@ -508,35 +499,14 @@ public class MainGame implements Screen {
 				collisionY = layer.getCell((int)((heroRec.getX())/16),(int)((heroRec.getY() + Hero.HEIGHT)/16))!=null;
 			}
 		}
-
+		// y collision is true: move back
 		if (collisionY){
 			heroRec.y -= hero.velocity.y;
 			hero.velocity.y = 0;
 		}
-//		for (Rectangle tile : tiles) {
-//			if (heroRec.overlaps(tile)) {
-//				if (heroRec.y + heroRec.height > tile.y && hero.velocity.y > 0){
-//					heroRec.y = tile.y - heroRec.height;
-//					hero.position.y = tile.y - heroRec.height;
-//					hero.velocity.y = 0;
-//				}else if(heroRec.y < tile.y + tile.height && hero.velocity.y < 0){
-//					heroRec.y = tile.y + tile.height;
-//					hero.position.y = tile.y + tile.height;
-//					hero.velocity.y = 0;
-//					hero.onTheGround = true;
-//				}
-//				else if (heroRec.x + heroRec.width > tile.x && hero.velocity.x > 0){
-//					heroRec.x = tile.x - heroRec.width;
-//					hero.position.x = tile.x - heroRec.width;
-//					hero.velocity.x = 0;
-//				}else if(heroRec.x < tile.x + tile.width && hero.velocity.x < 0){
-//					heroRec.x = tile.x + tile.width;
-//					hero.position.x = tile.x + tile.width;
-//					hero.velocity.x = 0;
-//				}
-//			}
-//		}
+
 		rectPool.free(heroRec);
+
 		// move hero
 		hero.position.add(hero.velocity);
 		if (hero.position.x > Gdx.graphics.getWidth()- Hero.WIDTH){
@@ -549,24 +519,6 @@ public class MainGame implements Screen {
 		}else if (hero.position.y < 0){
 			game.setScreen(new GameOverScreen(game));
 			bgm.dispose();
-		}
-	}
-
-	private void getSolidTiles(int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
-		// get walls layer
-		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("solid_layer");
-		rectPool.freeAll(tiles);
-		tiles.clear();
-		// add wall tile rectangles into tiles
-		for (int y = (endY/16); y >= (startY/16); y--) {
-			for (int x = (endX/16); x >= (startX/16); x--) {
-				TiledMapTileLayer.Cell cell = layer.getCell(x, y);
-				if (cell != null) {
-					Rectangle rect = rectPool.obtain();
-					rect.set(x*16, y*16, 16, 16);
-					tiles.add(rect);
-				}
-			}
 		}
 	}
 }
