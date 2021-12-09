@@ -87,6 +87,8 @@ public class MainGame implements Screen {
 	private Music bgm2;
 	private Label hp;
 	private int herohp = 5;
+	private Texture fairy1;
+	private Texture fairy2;
 	private Array<Rectangle> tiles = new Array<Rectangle>();
 	private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 		@Override
@@ -95,10 +97,9 @@ public class MainGame implements Screen {
 		}
 	};
 
-	int draw_left = 0;
-	int draw_right = 0;
 	private ArrayList<Monster> monsters = new ArrayList<>();
-
+	private ArrayList<Texture> fairys = new ArrayList<>();
+	boolean flag = false;
 	public MainGame(Game game){
 		this.game = game;
 		background = new Texture("background1.png");
@@ -224,11 +225,15 @@ public class MainGame implements Screen {
 		createLeftMonster(fireMonster6);
 		fireMonster5.position.set(700,416);
 
-		//hero's attack
+		//hero's attack (fireBall->left fireBall2->right)
 		fireBall = new Attack();
 		fireBall.img = new Texture("antifireball.png");
 		fireBall2 = new Attack();
 		fireBall2.img = new Texture("fireball.png");
+
+		//create fairy
+		fairy1 = new Texture("fairy.png");
+		fairys.add(fairy1);
 
 		// set hero's position at the start position
 		int x = 32, y = 32;
@@ -252,8 +257,6 @@ public class MainGame implements Screen {
 		hp.setX(Gdx.graphics.getWidth()-300);
 		hp.setY(Gdx.graphics.getHeight()-100);
 
-
-		//shooter.activeMonster();
 		stage.addActor(UP);
 		stage.addActor(LEFT);
 		stage.addActor(RIGHT);
@@ -305,13 +308,16 @@ public class MainGame implements Screen {
 		collisionDetection();
 
 		stage.addActor(hero);
-		stage.addActor(fireMonster);
 		stage.act();
 		stage.draw();
 
-		// render the ball,firemonster,shooter
 		Batch batch = renderer.getBatch();
 		batch.begin();
+		Rectangle fairyRec = new Rectangle();
+		if(flag == false){
+			fairyRec.set(350,130,fairy1.getWidth(),fairy1.getWidth());
+			batch.draw(fairy1,350,130,fairy1.getWidth(),fairy1.getHeight());
+		}
 		if (hero.isAttacking){
 			if (hero.right){
 				fireBall2.position.set(hero.position.x + 30, hero.position.y + 10);
@@ -345,6 +351,12 @@ public class MainGame implements Screen {
 				batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
 			}else {
 				batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT, 0, 0, 32, 32, true, false);
+			}
+			Rectangle heroRec = new Rectangle();
+			heroRec.set(hero.position.x,hero.position.y,Hero.WIDTH,Hero.HEIGHT);
+			if(Intersector.overlaps(fairyRec,heroRec)){
+				hero.hp++;
+				flag = true;
 			}
 
 		}

@@ -14,7 +14,6 @@ import java.util.TimerTask;
 
 public class Monster extends Actor{
     static final float SPEED = 1f;
-    static final float GRAVITY = 5f;
     static final float SIZE = 0.5f;
     static final float WIDTH = 16f;
     static final float HEIGHT = 16f;
@@ -112,7 +111,6 @@ public class Monster extends Actor{
         isDead = true;
     }
 
-    public void attack(){ }
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
