@@ -33,6 +33,7 @@ public class Hero extends Actor {
     float stateTime;
     boolean isAttacking = false;
     int immuneTime = 0;
+    int jumpTime = 2;
 
     public Hero() {
         super();
@@ -74,11 +75,9 @@ public class Hero extends Actor {
     }
 
     public void moveUp(){
-        velocity.y += 10;
-        if (left){
-            moveLeft();
-        }else {
-            moveRight();
+        if (jumpTime != 0){
+            velocity.y += 10;
+            jumpTime--;
         }
         isJumping = false;
         onTheGround = false;
@@ -129,6 +128,7 @@ public class Hero extends Actor {
             }
         }else {
             velocity.y = -GRAVITY;
+            jumpTime = 2;
         }
         position.add(velocity);
     }
