@@ -159,23 +159,18 @@ public class MainGame implements Screen {
 		fireMonster2 = new Monster();
 		fireMonster2.setID(2);
 		fireMonster2.img = new Texture("antislime.png");
-
 		//create shooter
 		//shooter = new Monster();
 		//shooter.img = new Texture("bird.png");
 		//shooter.setType("shooter");
 
-		//create fire and bullet
+		//create fire
 		fire = new Attack();
 		fire.img = new Texture("fire.png");
 		fire.setType("L");
 		fire2 = new Attack();
 		fire2.img = new Texture("antifire.png");
 		fire2.setType("R");
-		bullet = new Attack();
-		bullet.img = new Texture("fire.png");
-
-
 
 
 		// set hero's position at the start position
@@ -191,7 +186,6 @@ public class MainGame implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				hero.isAttacking = true;
-				hero.shoot(bullet);
 			}
 		});
 		//set monster's position
@@ -230,16 +224,10 @@ public class MainGame implements Screen {
 		renderer.setView(camera);
 		renderer.render();
 		if(LEFT.isPressed()){
-//			camera.translate(+2,0);
 			hero.moveLeft();
-			hero.left = true;
-			hero.right = false;
 		}
 		if(RIGHT.isPressed()){
-//			camera.translate(-2,0);
 			hero.moveRight();
-			hero.right = true;
-			hero.left = false;
 		}
 
 		collisionDetection();
@@ -251,11 +239,18 @@ public class MainGame implements Screen {
 		Batch batch = renderer.getBatch();
 		batch.begin();
 		if (hero.isAttacking){
-			batch.draw(hero.reg, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
-			batch.draw(bullet.img,bullet.position.x,bullet.position.y,Attack.WIDTH,Attack.HEIGHT);
-			monsterDestroyDetection(bullet);
+			if (hero.right){
+				batch.draw(hero.reg, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+			}else {
+				batch.draw(hero.flipReg, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+			}
 		}else {
-			batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+			if (hero.right){
+				batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+			}else {
+				batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT, 0, 0, 32, 32, true, false);
+			}
+
 		}
 		if(!fireMonster.isDead){
 			batch.draw(fireMonster.img,fireMonster.position.x,fireMonster.position.y,Monster.WIDTH,
@@ -270,12 +265,10 @@ public class MainGame implements Screen {
 		if(draw_left == 1 && fire.isActive){
 			batch.draw(fire.img,fire.position.x,fire.position.y ,fire.WIDTH,
 					fire.HEIGHT);
-			heroDestroyDetection(fire);
 		}
 		if (draw_right == 1 && fire.isActive){
 			batch.draw(fire2.img,fire2.position.x,fire2.position.y ,fire.WIDTH,
 					fire.HEIGHT);
-			heroDestroyDetection(fire2);
 		}
 
 		//batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
@@ -284,6 +277,8 @@ public class MainGame implements Screen {
 		batch.end();
 		draw_left = fireMonster.fireRight(fire);
 		draw_right = fireMonster2.fireLeft(fire2);
+		heroDestroyDetection(fire);
+		heroDestroyDetection(fire2);
 		//shooter.shoot(bullet);
 		if(hero.testDead()){
 			game.setScreen(new GameOverScreen(game));

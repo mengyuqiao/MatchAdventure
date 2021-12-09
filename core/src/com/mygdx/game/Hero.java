@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -26,39 +27,64 @@ public class Hero extends Actor {
     boolean onTheGround = true;
     int hp = 5;
     Texture img;
-    Texture attackSheet;
     Animation<TextureRegion> attackAnimation;
+    Animation<TextureRegion> flipAttackAnimation;
     TextureRegion reg;
-    float stateTime;
+    TextureRegion flipReg;
+    float stateTime, stateTime2;
     boolean isAttacking = false;
     int immuneTime = 0;
     int jumpTime = 2;
     Texture[] imgs;
+    Texture[] flipImgs;
 
     public Hero() {
         super();
-        img = new Texture("32x32_match.png");
+        Texture image = new Texture("32x32_match.png");
         Texture temp = new Texture("32x32_match_immune.png");
         imgs = new Texture[2];
-        imgs[0] = img;
+        flipImgs = new Texture[2];
+        imgs[0] = image;
         imgs[1] = temp;
+        flipImgs[0] = image;
+        TextureRegion tempRegion = new TextureRegion(image,0,0,32,32);
+        tempRegion.flip(false, true);
+        flipImgs[1] = tempRegion.getTexture();
+        img = imgs[0];
 
-        attackSheet = new Texture(Gdx.files.internal("32x32_matchfire.png"));
-        TextureRegion[][] tmp = TextureRegion.split(attackSheet, attackSheet.getWidth() / 6, attackSheet.getHeight());
+        Texture attackSheet = new Texture(Gdx.files.internal("32x32_matchfire.png"));
+        Texture attackSheet2 = new Texture(Gdx.files.internal("32x32_matchfire.png"));
+        TextureRegion[][] tmp1 = TextureRegion.split(attackSheet, attackSheet.getWidth() / 6, attackSheet.getHeight());
+        TextureRegion[][] tmp2 = TextureRegion.split(attackSheet2, attackSheet2.getWidth() / 6, attackSheet2.getHeight());
         TextureRegion[] attackFrames = new TextureRegion[6];
+        TextureRegion[] flipAttackFrames = new TextureRegion[6];
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + (attackFrames==flipAttackFrames));
         int cnt = 0;
-        for (TextureRegion[] regions : tmp){
+        for (TextureRegion[] regions : tmp1){
             for (TextureRegion region : regions){
                 attackFrames[cnt++] = region;
+//                region.flip(true, false);
+//                flipAttackFrames[cnt++] = region;
+            }
+        }
+        int cnt2 = 0;
+        for (TextureRegion[] regions2 : tmp2){
+            for (TextureRegion region2 : regions2){
+                region2.flip(true, false);
+                flipAttackFrames[cnt2++] = region2;
             }
         }
         attackAnimation = new Animation<>(0.15f, attackFrames);
+        flipAttackAnimation = new Animation<>(0.15f, flipAttackFrames);
         stateTime = 0f;
+        stateTime2 = 0f;
         reg = attackAnimation.getKeyFrame(stateTime);
+        flipReg = flipAttackAnimation.getKeyFrame(stateTime2);
     }
 
     public void attack(){
         reg = attackAnimation.getKeyFrame(stateTime);
+        flipReg = flipAttackAnimation.getKeyFrame(stateTime2);
     }
 
     public void getHit(){
@@ -119,10 +145,16 @@ public class Hero extends Actor {
 
         attack();
         stateTime += delta;
+        stateTime2 += delta;
         reg = attackAnimation.getKeyFrame(stateTime,false);
+        flipReg = attackAnimation.getKeyFrame(stateTime2,false);
         if (attackAnimation.isAnimationFinished(stateTime)){
             isAttacking = false;
             stateTime = 0;
+        }
+        if (attackAnimation.isAnimationFinished(stateTime2)){
+            isAttacking = false;
+            stateTime2 = 0;
         }
 
         if (immuneTime != 0){
