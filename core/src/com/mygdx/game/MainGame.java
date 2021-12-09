@@ -112,7 +112,7 @@ public class MainGame implements Screen {
 		FileHandle bgmHandle2 = Gdx.files.internal("bump.wav");
 		bgm2 = Gdx.audio.newMusic(bgmHandle2);
 	}
-
+	//create a left monster
 	public void createLeftMonster(Monster fireMonster2){
 		fireMonster2.setType("L");
 		fireMonster2.img = new Texture("antislime.png");
@@ -123,7 +123,7 @@ public class MainGame implements Screen {
 		fire2.setType("L");
 		fireMonster2.setAttack(fire2);
 	}
-
+	//create a right monster
 	public void createRightMonster(Monster fireMonster){
 		fireMonster.setType("R");
 		fireMonster.img = new Texture("slime.png");
@@ -235,7 +235,7 @@ public class MainGame implements Screen {
 		fairy1 = new Texture("fairy.png");
 		fairys.add(fairy1);
 
-		// set hero's position at the start position
+		// set hero's position at the start position and press attack to shoot
 		int x = 32, y = 32;
 		hero.position.set(x,y);
 		UP.addListener(new ClickListener(){
@@ -315,11 +315,14 @@ public class MainGame implements Screen {
 		batch.begin();
 		Rectangle fairyRec = new Rectangle();
 		if(flag == false){
+			// produce a fairy1
 			fairyRec.set(350,130,fairy1.getWidth(),fairy1.getWidth());
 			batch.draw(fairy1,350,130,fairy1.getWidth(),fairy1.getHeight());
 		}
+		//attack mode of hero
 		if (hero.isAttacking){
 			if (hero.right){
+				// jet right fireball
 				fireBall2.position.set(hero.position.x + 30, hero.position.y + 10);
 				batch.draw(fireBall2.img,fireBall2.position.x,fireBall2.position.y,Attack.WIDTH,
 						Attack.HEIGHT);
@@ -329,10 +332,12 @@ public class MainGame implements Screen {
 					batch.draw(fireBall2.img,fireBall2.position.x,fireBall2.position.y,Attack.WIDTH,
 							Attack.HEIGHT);
 				}
+				//destroy monster dectection
 				for(Monster monster: monsters){
 					monsterDestroyDetection(fireBall2,monster);
 				}
 			}else {
+				// jet left fireball
 				fireBall.position.set(hero.position.x - 15, hero.position.y + 10);
 				batch.draw(fireBall.img,fireBall.position.x,fireBall.position.y,Attack.WIDTH,
 						Attack.HEIGHT);
@@ -342,6 +347,7 @@ public class MainGame implements Screen {
 					batch.draw(fireBall.img,fireBall.position.x,fireBall.position.y,Attack.WIDTH,
 							Attack.HEIGHT);
 				}
+				//destroy monster dectection
 				for(Monster monster: monsters){
 					monsterDestroyDetection(fireBall,monster);
 				}
@@ -352,6 +358,7 @@ public class MainGame implements Screen {
 			}else {
 				batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT, 0, 0, 32, 32, true, false);
 			}
+			//recovery mechanism
 			Rectangle heroRec = new Rectangle();
 			heroRec.set(hero.position.x,hero.position.y,Hero.WIDTH,Hero.HEIGHT);
 			if(Intersector.overlaps(fairyRec,heroRec)){
@@ -360,14 +367,16 @@ public class MainGame implements Screen {
 			}
 
 		}
-
+		//attack mode of monster
 		for(Monster fireMonster : monsters) {
 			if (!fireMonster.isDead) {
 				batch.draw(fireMonster.img, fireMonster.position.x, fireMonster.position.y, Monster.WIDTH,
 						Monster.HEIGHT);
+				// jet right fire
 				if(fireMonster.getType() == "R"){
 					fireMonster.fireRight();
 				}
+				//jet left fire
 				else{
 					fireMonster.fireLeft();
 				}
@@ -377,6 +386,7 @@ public class MainGame implements Screen {
 							fire.WIDTH,
 							fire.HEIGHT);
 				}
+				//Destroy hero detection
 				heroDestroyDetection(fireMonster.getAttack());
 			}
 		}
@@ -423,6 +433,7 @@ public class MainGame implements Screen {
 	}
 
 	public void heroDestroyDetection(Attack fire){
+		// use a rectangle to store position and do the comparison
 		Rectangle heroRec = new Rectangle();
 		Rectangle fireRec = new Rectangle();
 		heroRec.set(hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
@@ -435,6 +446,7 @@ public class MainGame implements Screen {
 	}
 
 	public void monsterDestroyDetection(Attack fireball, Monster fireMonster){
+		// use a rectangle to store position and do the comparison
 		Rectangle monsterRec = new Rectangle();
 		Rectangle bulletRec = new Rectangle();
 		monsterRec.set(fireMonster.position.x, fireMonster.position.y, fireMonster.WIDTH,

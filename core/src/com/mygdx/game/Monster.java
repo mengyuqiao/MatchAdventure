@@ -1,26 +1,17 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import java.util.Objects;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class Monster extends Actor{
     static final float SPEED = 1f;
-    static final float SIZE = 0.5f;
     static final float WIDTH = 16f;
     static final float HEIGHT = 16f;
 
     Vector2 position = new Vector2();
     Vector2 velocity = new Vector2();
-    Rectangle bounds = new Rectangle();
     boolean isDead = true;
     Texture img;
     int flag = 1; //denote the direction of monster
@@ -31,13 +22,6 @@ public class Monster extends Actor{
 
     public Monster() {
         super();
-    }
-
-    public Monster(Vector2 position) {
-        super();
-        this.position = position;
-        this.bounds.height = SIZE;
-        this.bounds.width = SIZE;
     }
 
     public void setAttack(Attack attack) {
@@ -121,7 +105,5 @@ public class Monster extends Actor{
         // add velocity to position
         position.add(velocity);
         // change velocity
-        if (!isDead) {
-        }
     }
 }
