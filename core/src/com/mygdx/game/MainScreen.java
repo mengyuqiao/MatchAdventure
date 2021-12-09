@@ -35,8 +35,8 @@ public class MainScreen implements Screen {
 		this.game = game;
 		atlas = new TextureAtlas("uiskin.atlas");
 		skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
-		background = new Texture("backgroundtest.jpg");
-		background = new Texture("backgroundtest.jpg");
+		background = new Texture("MainBackground.jpg");
+		background = new Texture("MainBackground.jpg");
 		FileHandle bgmHandle = Gdx.files.internal("bgm.wav");
 		bgm = Gdx.audio.newMusic(bgmHandle);
 		bgm.setLooping(true);
@@ -62,12 +62,10 @@ public class MainScreen implements Screen {
 		//Set table to fill stage
 		mainTable.setFillParent(true);
 		//Set alignment of contents in the table.
-		mainTable.center();
 		Label nameLabel = new Label("Match Adventure", skin);
 		//Create buttons
-		TextButton playButton = new TextButton("Play", skin);
-		TextButton IntroButton = new TextButton("Intro", skin);
-		TextButton exitButton = new TextButton("Exit", skin);
+		Label playButton = new Label("Play",skin);
+		Label exitButton = new Label("Exit", skin);
 		int x = Gdx.graphics.getHeight();
 		int unit = x / 4;
 
@@ -75,9 +73,10 @@ public class MainScreen implements Screen {
 
 		float width = playButton.getWidth() * scale;
 
-		nameLabel.setFontScale(3, 3);
-		playButton.getLabel().setFontScale(3, 3);
-		exitButton.getLabel().setFontScale(3, 3);
+
+		nameLabel.setFontScale(8, 8);
+		playButton.setFontScale(4, 4);
+		exitButton.setFontScale(4, 4);
 
 		//Add listeners to buttons
 		playButton.addListener(new ClickListener(){
