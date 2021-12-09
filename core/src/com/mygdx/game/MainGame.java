@@ -53,8 +53,12 @@ public class MainGame implements Screen {
 	private ImageButton RIGHT;
 	private Stage stage;
 	private Hero hero;
+	private Monster fireMonster1;
 	private Monster fireMonster;
 	private Monster fireMonster2;
+	private Monster fireMonster3;
+	private Monster fireMonster4;
+	private Monster fireMonster5;
 	private Attack fire;
 	private Attack fire2;
 	private Attack fireBall;
@@ -105,6 +109,28 @@ public class MainGame implements Screen {
 		bgm1 = Gdx.audio.newMusic(bgmHandle1);
 		FileHandle bgmHandle2 = Gdx.files.internal("bump.wav");
 		bgm2 = Gdx.audio.newMusic(bgmHandle2);
+	}
+
+	public void createLeftMonster(Monster fireMonster2){
+		fireMonster2.setType("L");
+		fireMonster2.img = new Texture("antislime.png");
+		fireMonster2.activeMonster();
+		monsters.add(fireMonster2);
+		fire2 = new Attack();
+		fire2.img = new Texture("antifire.png");
+		fire2.setType("L");
+		fireMonster2.setAttack(fire2);
+	}
+
+	public void createRightMonster(Monster fireMonster){
+		fireMonster.setType("R");
+		fireMonster.img = new Texture("slime.png");
+		fireMonster.activeMonster();
+		monsters.add(fireMonster);
+		fire = new Attack();
+		fire.img = new Texture("fire.png");
+		fire.setType("R");
+		fireMonster.setAttack(fire);
 	}
 
 	public void show() {
@@ -163,30 +189,21 @@ public class MainGame implements Screen {
 		renderer = new OrthogonalTiledMapRenderer(map);
 
 		//create left fire monster 1
+		fireMonster1 = new Monster();
+		createLeftMonster(fireMonster1);
+		fireMonster1.position.set(800,32);
+
+		//create right right monster 0
 		fireMonster = new Monster();
-		fireMonster.setType("R");
-		fireMonster.img = new Texture("slime.png");
+		createRightMonster(fireMonster);
 		fireMonster.position.set(400,130);
-		fireMonster.activeMonster();
-		monsters.add(fireMonster);
-		fire = new Attack();
-		fire.img = new Texture("fire.png");
-		fire.setType("R");
-		fireMonster.setAttack(fire);
 
-		//create right fire monster 2
+		//create left fire monster 2
 		fireMonster2 = new Monster();
-		fireMonster2.setType("L");
-		fireMonster2.img = new Texture("antislime.png");
+		createLeftMonster(fireMonster2);
 		fireMonster2.position.set(900,130);
-		fireMonster2.activeMonster();
-		monsters.add(fireMonster2);
-		fire2 = new Attack();
-		fire2.img = new Texture("antifire.png");
-		fire2.setType("L");
-		fireMonster2.setAttack(fire2);
 
-
+		//hero's attack
 		fireBall = new Attack();
 		fireBall.img = new Texture("antifireball.png");
 		fireBall2 = new Attack();
@@ -331,8 +348,6 @@ public class MainGame implements Screen {
 			}
 		}
 
-		//batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
-		//		bullet.HEIGHT);
 		batch.draw(portalTexture, 880, 416, 40, 48);
 
 		batch.end();
