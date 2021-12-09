@@ -89,8 +89,7 @@ public class MainScreen implements Screen {
 		exitButton.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				//Gdx.app.exit();
-				game.setScreen(new WinScreen(game));
+				Gdx.app.exit();
 				bgm.dispose();
 			}
 		});

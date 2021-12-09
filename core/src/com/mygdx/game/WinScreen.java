@@ -64,21 +64,21 @@ public class WinScreen implements Screen {
 		table.setFillParent(true);
 		winLabel = new Label("Virtory !!!", font1);
 		winLabel.setFontScale(8,8);
-		nextlevelLabel = new Label("Next level", font);
+		nextlevelLabel = new Label("Menu", font);
 		nextlevelLabel.setFontScale(4,4);
-		ExitLabel = new Label("Menu Screen", font);
+		ExitLabel = new Label("Exit", font);
 		ExitLabel.setFontScale(4,4);
 		nextlevelLabel.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(new MainGame(game));
+				game.setScreen(new MainScreen(game));
 				bgm1.dispose();
 			}
 		});
 		ExitLabel.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(new MainScreen(game));
+				Gdx.app.exit();
 				bgm1.dispose();
 			}
 		});
@@ -97,8 +97,8 @@ public class WinScreen implements Screen {
 		if(x>Gdx.graphics.getWidth()/2.5) {
 			x = x - 10;
 			winLabel.setX(x);
-			ExitLabel.setX(x);
-			nextlevelLabel.setX(x);
+			ExitLabel.setX(x+150);
+			nextlevelLabel.setX(x+150);
 		}
 		stage.getBatch().begin();
 		stage.getBatch().draw(background,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

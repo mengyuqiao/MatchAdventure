@@ -343,6 +343,7 @@ public class MainGame implements Screen {
 
 		if (hero.position.x < 880+40 && hero.position.x > 880-32 && hero.position.y < 400+48 && hero.position.y > 400-32){
 			game.setScreen(new WinScreen(game));
+			bgm.dispose();
 		}
 
 	}
