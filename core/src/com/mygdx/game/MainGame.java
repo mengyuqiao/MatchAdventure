@@ -310,7 +310,7 @@ public class MainGame implements Screen {
 
 		//batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
 		//		bullet.HEIGHT);
-		batch.draw(portalTexture, 1792, 800, 48, 48);
+		batch.draw(portalTexture, 880, 416, 40, 48);
 
 		batch.end();
 		if(hero.testDead()){
@@ -489,6 +489,10 @@ public class MainGame implements Screen {
 			hero.position.y = Gdx.graphics.getHeight()- Hero.HEIGHT;
 		}else if (hero.position.y < 0){
 			hero.position.y = 0;
+		}
+
+		if (hero.position.x < 880+40 && hero.position.x > 880-32 && hero.position.y < 400+48 && hero.position.y > 400-32){
+			game.setScreen(new WinScreen(game));
 		}
 	}
 
