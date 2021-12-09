@@ -434,20 +434,20 @@ public class MainGame implements Screen {
 			collisionX = layer.getCell((int)(heroRec.getX()/16),(int)((heroRec.getY() + Hero.HEIGHT)/16))!=null;
 			// middle left
 			if (!collisionX){
-				collisionX = layer.getCell((int)(heroRec.getX()/16),(int)((heroRec.getY() + Hero.HEIGHT/2)/16))!=null;
+				collisionX = layer.getCell((int)(heroRec.getX()/16),(int)((heroRec.getY() + Hero.HEIGHT/4)/16))!=null;
 			}
 			if (!collisionX){
-				collisionX = layer.getCell((int)(heroRec.getX()/16),(int)((heroRec.getY())/16))!=null;
+				collisionX = layer.getCell((int)(heroRec.getX()/16),(int)((heroRec.getY() + Hero.HEIGHT*3/4)/16))!=null;
 			}
 		}else if (hero.velocity.x > 0){
 			// top left
 			collisionX = layer.getCell((int)(heroRec.getX() + Hero.WIDTH)/16,(int)((heroRec.getY() + Hero.HEIGHT)/16))!=null;
 			// middle left
 			if (!collisionX){
-				collisionX = layer.getCell((int)(heroRec.getX() + Hero.WIDTH)/16,(int)((heroRec.getY() + Hero.HEIGHT/2)/16))!=null;
+				collisionX = layer.getCell((int)(heroRec.getX() + Hero.WIDTH)/16,(int)((heroRec.getY() + Hero.HEIGHT/4)/16))!=null;
 			}
 			if (!collisionX){
-				collisionX = layer.getCell((int)(heroRec.getX() + Hero.WIDTH)/16,(int)((heroRec.getY())/16))!=null;
+				collisionX = layer.getCell((int)(heroRec.getX() + Hero.WIDTH)/16,(int)((heroRec.getY()+ Hero.HEIGHT*3/4)/16))!=null;
 			}
 		}
 
