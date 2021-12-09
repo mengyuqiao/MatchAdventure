@@ -244,7 +244,7 @@ public class MainGame implements Screen {
 		// camera sees, and render the map
 		renderer.setView(camera);
 		renderer.render();
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
 			bgm1.play();hero.moveUp();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
@@ -517,7 +517,8 @@ public class MainGame implements Screen {
 		if (hero.position.y > Gdx.graphics.getHeight()- Hero.HEIGHT){
 			hero.position.y = Gdx.graphics.getHeight()- Hero.HEIGHT;
 		}else if (hero.position.y < 0){
-			hero.position.y = 0;
+			game.setScreen(new GameOverScreen(game));
+			bgm.dispose();
 		}
 	}
 
