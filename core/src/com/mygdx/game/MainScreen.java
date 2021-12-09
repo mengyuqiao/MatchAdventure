@@ -35,7 +35,7 @@ public class MainScreen implements Screen {
 		this.game = game;
 		atlas = new TextureAtlas("uiskin.atlas");
 		skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
-		background = new Texture("MainBackground.jpg");
+		background = new Texture("MainBackground.png");
 		FileHandle bgmHandle = Gdx.files.internal("begin.mp3");
 		bgm = Gdx.audio.newMusic(bgmHandle);
 		bgm.setLooping(true);
@@ -89,14 +89,14 @@ public class MainScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				//Gdx.app.exit();
-				game.setScreen(new GameOverScreen(game));
+				game.setScreen(new WinScreen(game));
 			}
 		});
 
 		//Add buttons to table
-		mainTable.add(nameLabel).size(width, unit).padBottom(20).row();
-		mainTable.add(playButton).size(width, unit).padBottom(20).row();
-		mainTable.add(exitButton).size(width, unit).padBottom(20).row();
+		mainTable.add(nameLabel).size(width, unit).padBottom(0).row();
+		mainTable.add(playButton).size(width, unit).padBottom(-100).row();
+		mainTable.add(exitButton).size(width, unit).padBottom(10).row();
 
 		//Add table to stage
 		stage.addActor(mainTable);
