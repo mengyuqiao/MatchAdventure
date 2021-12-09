@@ -36,12 +36,10 @@ public class MainScreen implements Screen {
 		atlas = new TextureAtlas("uiskin.atlas");
 		skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
 		background = new Texture("backgroundtest.jpg");
-		background = new Texture("backgroundtest.jpg");
-		FileHandle bgmHandle = Gdx.files.internal("bgm.wav");
+		FileHandle bgmHandle = Gdx.files.internal("begin.mp3");
 		bgm = Gdx.audio.newMusic(bgmHandle);
 		bgm.setLooping(true);
 		bgm.play();
-
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);

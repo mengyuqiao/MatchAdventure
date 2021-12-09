@@ -72,6 +72,7 @@ public class MainGame implements Screen {
 	private OrthographicCamera camera;
 	private Texture background;
 	private Music bgm;
+	private Music bgm1;
 	private Array<Rectangle> tiles = new Array<Rectangle>();
 	private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 		@Override
@@ -89,6 +90,9 @@ public class MainGame implements Screen {
 		bgm = Gdx.audio.newMusic(bgmHandle);
 		bgm.setLooping(true);
 		bgm.play();
+		FileHandle bgmHandle1 = Gdx.files.internal("gameover.mp3");
+		bgm1 = Gdx.audio.newMusic(bgmHandle1);
+		bgm1.setLooping(true);
 	}
 
 	public void show() {
@@ -273,7 +277,9 @@ public class MainGame implements Screen {
 		//shooter.shoot(bullet);
 
 		if(hero.testDead()){
+			bgm1.play();
 			game.setScreen(new GameOverScreen(game));
+			bgm.dispose();
 		}
 
 		stage.act();
