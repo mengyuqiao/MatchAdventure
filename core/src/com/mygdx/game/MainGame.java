@@ -225,14 +225,17 @@ public class MainGame implements Screen {
 		// camera sees, and render the map
 		renderer.setView(camera);
 		renderer.render();
-		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
 			bgm1.play();hero.moveUp();
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
-				hero.moveRight();
+		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+			hero.moveRight();
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
-				hero.moveLeft();
+		if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+			hero.moveLeft();
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+			hero.isAttacking = true;
 		}
 		if(LEFT.isPressed()){
 			hero.moveLeft();
