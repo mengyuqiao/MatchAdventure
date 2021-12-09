@@ -154,25 +154,23 @@ public class MainGame implements Screen {
 
 		//create fire monster
 		fireMonster = new Monster();
-		fireMonster.setID("rightMonster-1");
+		fireMonster.setID("L1");
 		fireMonster.img = new Texture("slime.png");
 		fireMonster2 = new Monster();
-		fireMonster2.setID("leftMonster-2");
+		fireMonster2.setID("R1");
 		fireMonster2.img = new Texture("antislime.png");
 
 		//create fire
 		fire = new Attack();
 		fire.img = new Texture("fire.png");
-		fire.setType("LeftFire-1");
+		fire.setID("L1");
 		fire2 = new Attack();
 		fire2.img = new Texture("antifire.png");
-		fire2.setType("RightFire-1");
+		fire2.setID("R1");
 		fireBall = new Attack();
 		fireBall.img = new Texture("antifireball.png");
-		fireBall.setType("leftFireBall-1");
 		fireBall2 = new Attack();
 		fireBall2.img = new Texture("fireball.png");
-		fireBall2.setType("rightFireball-2");
 
 		// set hero's position at the start position
 		int x = 32, y = 32;
@@ -190,11 +188,11 @@ public class MainGame implements Screen {
 			}
 		});
 		//set monster's position
-		fireMonster.position.set(400,32);
-		fire.position.set(410,32);
+		fireMonster.position.set(400,130);
+		fire.position.set(410,130);
 		fireMonster.activeMonster(fire);
-		fireMonster2.position.set(900,32);
-		fire2.position.set(885,32);
+		fireMonster2.position.set(900,130);
+		fire2.position.set(885,130);
 		fireMonster2.activeMonster(fire2);
 
 		//shooter.activeMonster();
@@ -245,22 +243,25 @@ public class MainGame implements Screen {
 				batch.draw(fireBall2.img,fireBall2.position.x,fireBall2.position.y,Attack.WIDTH,
 						Attack.HEIGHT);
 				batch.draw(hero.reg, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
-				while(fireBall2.position.x < Gdx.graphics.getWidth()){
+				for(int i = 0; i < 3; i++ ){
 					fireBall2.shootRight();
 					batch.draw(fireBall2.img,fireBall2.position.x,fireBall2.position.y,Attack.WIDTH,
 							Attack.HEIGHT);
 				}
+				monsterDestroyDetection(fireBall2,fireMonster2,fire2);
+				monsterDestroyDetection(fireBall2,fireMonster,fire);
 			}else {
 				fireBall.position.set(hero.position.x - 15, hero.position.y + 10);
 				batch.draw(fireBall.img,fireBall.position.x,fireBall.position.y,Attack.WIDTH,
 						Attack.HEIGHT);
-				while(fireBall.position.x > 0){
+				batch.draw(hero.flipReg, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+				for (int i = 0; i < 3; i++){
 					fireBall.shootLeft();
 					batch.draw(fireBall.img,fireBall.position.x,fireBall.position.y,Attack.WIDTH,
 							Attack.HEIGHT);
 				}
-				//monsterDestroyDetection(fireBall,fireMonster2);
-				batch.draw(hero.flipReg, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+				monsterDestroyDetection(fireBall,fireMonster2,fire2);
+				monsterDestroyDetection(fireBall,fireMonster,fire);
 			}
 		}else {
 			if (hero.right){
@@ -284,7 +285,7 @@ public class MainGame implements Screen {
 			batch.draw(fire.img,fire.position.x,fire.position.y ,fire.WIDTH,
 					fire.HEIGHT);
 		}
-		if (draw_right == 1 && fire.isActive){
+		if (draw_right == 1 && fire2.isActive){
 			batch.draw(fire2.img,fire2.position.x,fire2.position.y ,fire.WIDTH,
 					fire.HEIGHT);
 		}
@@ -343,7 +344,7 @@ public class MainGame implements Screen {
 		}
 	}
 
-	public void monsterDestroyDetection(Attack fireball, Monster fireMonster){
+	public void monsterDestroyDetection(Attack fireball, Monster fireMonster, Attack fire){
 		Rectangle monsterRec = new Rectangle();
 		Rectangle bulletRec = new Rectangle();
 		monsterRec.set(fireMonster.position.x, fireMonster.position.y, fireMonster.WIDTH,

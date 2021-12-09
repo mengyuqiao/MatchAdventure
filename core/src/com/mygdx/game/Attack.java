@@ -18,22 +18,19 @@ public class Attack extends Actor {
     Vector2 velocity = new Vector2();
 
     Texture img;
-    float distance = 0;
-    int flag = 0;
-    String type;
-    String active;
+    String id;
     boolean isActive = false;
 
     public Attack() {
         super();
     }
 
-    public String getType(){
-        return type;
+    public String getID(){
+        return id;
     }
 
-    public void setType(String type){
-        this.type = type;
+    public void setID(String id){
+        this.id = id;
     }
 
     public void shootRight(){
