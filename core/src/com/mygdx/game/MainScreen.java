@@ -52,29 +52,30 @@ public class MainScreen implements Screen {
 	}
 	@Override
 	public void show() {
-			Gdx.input.setInputProcessor(stage);
+		Gdx.input.setInputProcessor(stage);
 
-			//Create Table
-			Table mainTable = new Table();
-			mainTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			//Set table to fill stage
-			mainTable.setFillParent(true);
-			//Set alignment of contents in the table.
-			Label nameLabel = new Label("Match Adventure", skin);
-			//Create buttons
-			Label playButton = new Label("Play",skin);
-			Label exitButton = new Label("Exit", skin);
-			int x = Gdx.graphics.getHeight();
-			int unit = x / 4;
+		//Create Table
+		Table mainTable = new Table();
+		mainTable.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		//Set table to fill stage
+		mainTable.setFillParent(true);
+		mainTable.right();
+		//Set alignment of contents in the table.
+		Label nameLabel = new Label("Match Adventure", skin);
+		//Create buttons
+		Label playButton = new Label("                    Play",skin);
+		Label exitButton = new Label("                    Exit", skin);
+		int x = Gdx.graphics.getHeight();
+		int unit = x / 4;
 
-			float scale = unit / playButton.getHeight();
+		float scale = unit / playButton.getHeight();
 
-			float width = playButton.getWidth() * scale;
+		float width = playButton.getWidth() * scale;
 
 
-			nameLabel.setFontScale(8, 8);
-			playButton.setFontScale(4, 4);
-			exitButton.setFontScale(4, 4);
+		nameLabel.setFontScale(10, 10);
+		playButton.setFontScale(6, 6);
+		exitButton.setFontScale(6, 6);
 
 		//Add listeners to buttons
 		playButton.addListener(new ClickListener(){

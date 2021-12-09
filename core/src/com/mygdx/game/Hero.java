@@ -100,10 +100,12 @@ public class Hero extends Actor {
 
     public void shoot(Attack attack){
         if(left){
-            attack.heroshootRight();
+            attack.heroshootLeft();
+            attack.position.set(position.x - 20, position.y + 20);
         }
         else if(right){
-            attack.heroshootLeft();
+            attack.heroshootRight();
+            attack.position.set(position.x + 20, position.y + 20);
         }
     }
 
