@@ -3,6 +3,8 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -33,6 +35,7 @@ public class GameOverScreen implements Screen {
 	private TextureAtlas atlas;
 	protected Skin skin;
 	private Label ExitLabel;
+	private Music bgm1;
 
 	public GameOverScreen(Game game){
 		this.game = game;
@@ -42,7 +45,9 @@ public class GameOverScreen implements Screen {
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 		viewport.apply();
-
+		FileHandle bgmHandle1 = Gdx.files.internal("gameover.mp3");
+		bgm1 = Gdx.audio.newMusic(bgmHandle1);
+		bgm1.play();
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 		camera.update();
 		stage = new Stage(viewport,batch);
@@ -68,12 +73,14 @@ public class GameOverScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				game.setScreen(new MainGame(game));
+				bgm1.dispose();
 			}
 		});
 		ExitLabel.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Gdx.app.exit();
+				game.setScreen(new MainScreen(game));
+				bgm1.dispose();
 			}
 		});
 		table.add(gameOverLabel).expandX();
