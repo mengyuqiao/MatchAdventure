@@ -94,13 +94,13 @@ public class Hero extends Actor {
     }
 
     public void moveLeft(){
-        position.x -= SPEED;
+        velocity.x = -SPEED;
         left = true;
         right = false;
     }
 
     public void moveRight(){
-        position.x += SPEED;
+        velocity.x = SPEED;
         right = true;
         left = false;
     }
@@ -167,9 +167,10 @@ public class Hero extends Actor {
                 velocity.y -= GRAVITY;
             }
         }else {
-            velocity.y = -GRAVITY;
+            velocity.y = 0;
             jumpTime = 2;
         }
         position.add(velocity);
+        velocity.x = 0;
     }
 }

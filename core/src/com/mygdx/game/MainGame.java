@@ -60,6 +60,7 @@ public class MainGame implements Screen {
 	private Texture rightTexture;
 	private Texture leftTexture;
 	private Texture shootTexture;
+	private Texture portalTexture;
 	private TextureRegion UpTextureRegion;
 	private TextureRegion RightTextureRegion;
 	private TextureRegion leftTextureRegion;
@@ -202,6 +203,7 @@ public class MainGame implements Screen {
 		stage.addActor(RIGHT);
 		stage.addActor(Shoot);
 
+		portalTexture = new Texture("portal.png");
 	}
 
 
@@ -234,6 +236,8 @@ public class MainGame implements Screen {
 
 		stage.addActor(hero);
 		stage.addActor(fireMonster);
+		stage.act();
+		stage.draw();
 
 		// render the ball,firemonster,shooter
 		Batch batch = renderer.getBatch();
@@ -273,6 +277,7 @@ public class MainGame implements Screen {
 
 		//batch.draw(bullet.img,bullet.position.x,bullet.position.y,bullet.WIDTH,
 		//		bullet.HEIGHT);
+		batch.draw(portalTexture, 1792, 800, 48, 48);
 
 		batch.end();
 		draw_left = fireMonster.fireRight(fire);
@@ -284,8 +289,7 @@ public class MainGame implements Screen {
 			game.setScreen(new GameOverScreen(game));
 			bgm.dispose();
 		}
-		stage.act();
-		stage.draw();
+
 	}
 
 	@Override
@@ -342,39 +346,108 @@ public class MainGame implements Screen {
 		heroRec.set(hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
 		// check hero's velocity on x and y axes
 		int startX, startY, endX, endY;
-		startX = (int)(hero.position.x + hero.velocity.x);
-		endX = (int)(hero.position.x + Hero.WIDTH + hero.velocity.x);
-		startY = (int)(hero.position.y + hero.velocity.y);
-		endY = (int)(hero.position.y + Hero.HEIGHT + hero.velocity.y);
+		if (hero.velocity.x < 0){
+			startX = (int)(hero.position.x + hero.velocity.x);
+			endX = (int)(hero.position.x);
+		} else{
+			startX = (int)(hero.position.x + Hero.WIDTH);
+			endX = (int)(hero.position.x + Hero.WIDTH + hero.velocity.x);
+		}
+		if (hero.velocity.y < 0){
+			startY = (int)(hero.position.y + hero.velocity.y);
+			endY = (int)(hero.position.y);
+		} else{
+			startY = (int)(hero.position.y + Hero.HEIGHT);
+			endY = (int)(hero.position.y + Hero.HEIGHT + hero.velocity.y);
+		}
+
 		// get solid_layer rects
 		getSolidTiles(startX, startY, endX, endY, tiles);
 		// move hero's rect
 		heroRec.x += hero.velocity.x;
 		heroRec.y += hero.velocity.y;
 		// check collision
-		for (Rectangle tile : tiles) {
-			if (heroRec.overlaps(tile)) {
-				if (heroRec.x + heroRec.width > tile.x && hero.velocity.x > 0){
-					heroRec.x = tile.x - heroRec.width;
-					hero.position.x = tile.x - heroRec.width;
-					hero.velocity.x = 0;
-				}else if(heroRec.x < tile.x + tile.width && hero.velocity.x < 0){
-					heroRec.x = tile.x + tile.width;
-					hero.position.x = tile.x + tile.width;
-					hero.velocity.x = 0;
-				}
-				else if (heroRec.y + heroRec.height > tile.y && hero.velocity.y > 0){
-					heroRec.y = tile.y - heroRec.height;
-					hero.position.y = tile.y - heroRec.height;
-					hero.velocity.y = 0;
-				}else if(heroRec.y < tile.y + tile.height && hero.velocity.y < 0){
-					heroRec.y = tile.y + tile.height;
-					hero.position.y = tile.y + tile.height;
-					hero.velocity.y = 0;
-					hero.onTheGround = true;
-				}
+		hero.onTheGround = false;
+		boolean collisionX = false, collisionY = false;
+		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("solid_layer");
+
+		if (hero.velocity.x < 0){
+			// top left
+			collisionX = layer.getCell((int)(heroRec.getX()/16),(int)((heroRec.getY() + Hero.HEIGHT)/16))!=null;
+			// middle left
+			if (!collisionX){
+				collisionX = layer.getCell((int)(heroRec.getX()/16),(int)((heroRec.getY() + Hero.HEIGHT/2)/16))!=null;
+			}
+			if (!collisionX){
+				collisionX = layer.getCell((int)(heroRec.getX()/16),(int)((heroRec.getY())/16))!=null;
+			}
+		}else if (hero.velocity.x > 0){
+			// top left
+			collisionX = layer.getCell((int)(heroRec.getX() + Hero.WIDTH)/16,(int)((heroRec.getY() + Hero.HEIGHT)/16))!=null;
+			// middle left
+			if (!collisionX){
+				collisionX = layer.getCell((int)(heroRec.getX() + Hero.WIDTH)/16,(int)((heroRec.getY() + Hero.HEIGHT/2)/16))!=null;
+			}
+			if (!collisionX){
+				collisionX = layer.getCell((int)(heroRec.getX() + Hero.WIDTH)/16,(int)((heroRec.getY())/16))!=null;
 			}
 		}
+
+		if (collisionX){
+			heroRec.x -= hero.velocity.x;
+			hero.velocity.x = 0;
+		}
+
+		if (hero.velocity.y <= 0){
+			// top left
+//			collisionY = layer.getCell((int)((heroRec.getX()+ Hero.WIDTH)/16),(int)((heroRec.getY())/16))!=null;
+			// middle left
+			collisionY = layer.getCell((int)((heroRec.getX() + Hero.WIDTH/2)/16),(int)((heroRec.getY())/16))!=null;
+			if (!collisionY){
+				collisionY = layer.getCell((int)((heroRec.getX())/16),(int)((heroRec.getY())/16))!=null;
+			}
+			if (collisionY){
+				hero.onTheGround = true;
+			}
+		}else if (hero.velocity.y > 0){
+			// top left
+			collisionY = layer.getCell((int)((heroRec.getX() + Hero.WIDTH)/16),(int)((heroRec.getY() + Hero.HEIGHT)/16))!=null;
+			// middle left
+			if (!collisionY){
+				collisionY = layer.getCell((int)((heroRec.getX() + Hero.WIDTH/2)/16),(int)((heroRec.getY() + Hero.HEIGHT)/16))!=null;
+			}
+			if (!collisionY){
+				collisionY = layer.getCell((int)((heroRec.getX())/16),(int)((heroRec.getY() + Hero.HEIGHT)/16))!=null;
+			}
+		}
+
+		if (collisionY){
+			heroRec.y -= hero.velocity.y;
+			hero.velocity.y = 0;
+		}
+//		for (Rectangle tile : tiles) {
+//			if (heroRec.overlaps(tile)) {
+//				if (heroRec.y + heroRec.height > tile.y && hero.velocity.y > 0){
+//					heroRec.y = tile.y - heroRec.height;
+//					hero.position.y = tile.y - heroRec.height;
+//					hero.velocity.y = 0;
+//				}else if(heroRec.y < tile.y + tile.height && hero.velocity.y < 0){
+//					heroRec.y = tile.y + tile.height;
+//					hero.position.y = tile.y + tile.height;
+//					hero.velocity.y = 0;
+//					hero.onTheGround = true;
+//				}
+//				else if (heroRec.x + heroRec.width > tile.x && hero.velocity.x > 0){
+//					heroRec.x = tile.x - heroRec.width;
+//					hero.position.x = tile.x - heroRec.width;
+//					hero.velocity.x = 0;
+//				}else if(heroRec.x < tile.x + tile.width && hero.velocity.x < 0){
+//					heroRec.x = tile.x + tile.width;
+//					hero.position.x = tile.x + tile.width;
+//					hero.velocity.x = 0;
+//				}
+//			}
+//		}
 		rectPool.free(heroRec);
 		// move hero
 		hero.position.add(hero.velocity);
@@ -396,8 +469,8 @@ public class MainGame implements Screen {
 		rectPool.freeAll(tiles);
 		tiles.clear();
 		// add wall tile rectangles into tiles
-		for (int y = (startY/16); y <= (endY/16); y++) {
-			for (int x = (startX/16); x <= (endX/16); x++) {
+		for (int y = (endY/16); y >= (startY/16); y--) {
+			for (int x = (endX/16); x >= (startX/16); x--) {
 				TiledMapTileLayer.Cell cell = layer.getCell(x, y);
 				if (cell != null) {
 					Rectangle rect = rectPool.obtain();
