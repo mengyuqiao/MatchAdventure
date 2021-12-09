@@ -15,7 +15,6 @@ import java.util.Random;
 public class Hero extends Actor {
     static final float SPEED = 2f;
     static final float GRAVITY = 1f;
-    static final float SIZE = 0.5f;
     static final float WIDTH = 32f;
     static final float HEIGHT = 32f;
 
@@ -34,9 +33,16 @@ public class Hero extends Actor {
     boolean isAttacking = false;
     int immuneTime = 0;
     int jumpTime = 2;
+    Texture[] imgs;
 
     public Hero() {
         super();
+        img = new Texture("32x32_match.png");
+        Texture temp = new Texture("32x32_match_immune.png");
+        imgs = new Texture[2];
+        imgs[0] = img;
+        imgs[1] = temp;
+
         attackSheet = new Texture(Gdx.files.internal("32x32_matchfire.png"));
         TextureRegion[][] tmp = TextureRegion.split(attackSheet, attackSheet.getWidth() / 6, attackSheet.getHeight());
         TextureRegion[] attackFrames = new TextureRegion[6];
@@ -119,6 +125,9 @@ public class Hero extends Actor {
 
         if (immuneTime != 0){
             immuneTime--;
+            if (immuneTime % 16 == 0){
+                img = imgs[immuneTime/16%2];
+            }
         }
 
         // add velocity to position
