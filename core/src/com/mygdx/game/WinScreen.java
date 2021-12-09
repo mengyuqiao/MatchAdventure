@@ -8,6 +8,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -32,6 +33,8 @@ public class WinScreen implements Screen {
 	protected Skin skin;
 	private Label ExitLabel;
 	private Music bgm1;
+	private Texture background;
+	private int x;
 	public WinScreen(Game game){
 		this.game = game;
 		atlas = new TextureAtlas("uiskin.atlas");
@@ -40,25 +43,27 @@ public class WinScreen implements Screen {
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 		viewport.apply();
+		background = new Texture("background1.png");
 		FileHandle bgmHandle1 = Gdx.files.internal("win.mp3");
 		bgm1 = Gdx.audio.newMusic(bgmHandle1);
 		bgm1.play();
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 		camera.update();
 		stage = new Stage(viewport,batch);
+		x = Gdx.graphics.getWidth();
 	}
 
 	@Override
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
-		Label.LabelStyle font1 = new Label.LabelStyle(new BitmapFont(), Color.RED);
+		Label.LabelStyle font1 = new Label.LabelStyle(new BitmapFont(), Color.YELLOW);
 		Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
 		Table table = new Table();
 		table.center();
 		table.setFillParent(true);
 		winLabel = new Label("Virtory !!!", font1);
-		winLabel.setFontScale(6,6);
+		winLabel.setFontScale(8,8);
 		nextlevelLabel = new Label("Next level", font);
 		nextlevelLabel.setFontScale(4,4);
 		ExitLabel = new Label("Menu Screen", font);
@@ -79,9 +84,9 @@ public class WinScreen implements Screen {
 		});
 		table.add(winLabel).expandX();
 		table.row();
-		table.add(nextlevelLabel).expandX().padTop(30);
+		table.add(nextlevelLabel).expandX().padTop(70);
 		table.row();
-		table.add(ExitLabel).expandX().padTop(30);
+		table.add(ExitLabel).expandX().padTop(70);
 		stage.addActor(table);
 	}
 
@@ -89,6 +94,15 @@ public class WinScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		if(x>Gdx.graphics.getWidth()/2.5) {
+			x = x - 10;
+			winLabel.setX(x);
+			ExitLabel.setX(x);
+			nextlevelLabel.setX(x);
+		}
+		stage.getBatch().begin();
+		stage.getBatch().draw(background,0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		stage.getBatch().end();
 		stage.act();
 		stage.draw();
 	}

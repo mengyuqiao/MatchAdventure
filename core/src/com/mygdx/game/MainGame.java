@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
@@ -214,7 +215,7 @@ public class MainGame implements Screen {
 		stage.getBatch().draw(background, -hero.position.x, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		stage.getBatch().end();
 		stage.getBatch().begin();
-		stage.getBatch().draw(background, 2100-hero.position.x, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		stage.getBatch().draw(background, Gdx.graphics.getWidth()-hero.position.x, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		stage.getBatch().end();
 		// let the camera follow the hero
 		camera.position.set(hero.position.x + 20, hero.position.y + 60, 0);
@@ -224,6 +225,15 @@ public class MainGame implements Screen {
 		// camera sees, and render the map
 		renderer.setView(camera);
 		renderer.render();
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
+			bgm1.play();hero.moveUp();
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
+				hero.moveRight();
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
+				hero.moveLeft();
+		}
 		if(LEFT.isPressed()){
 			hero.moveLeft();
 		}
