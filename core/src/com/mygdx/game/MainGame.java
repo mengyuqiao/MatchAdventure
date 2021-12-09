@@ -7,9 +7,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -23,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -76,6 +79,8 @@ public class MainGame implements Screen {
 	private Music bgm;
 	private Music bgm1;
 	private Music bgm2;
+	private Label hp;
+	private int herohp = 5;
 	private Array<Rectangle> tiles = new Array<Rectangle>();
 	private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 		@Override
@@ -196,13 +201,17 @@ public class MainGame implements Screen {
 		fireMonster2.position.set(900,130);
 		fire2.position.set(885,130);
 		fireMonster2.activeMonster(fire2);
-
 		//shooter.activeMonster();
+		Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.YELLOW);
+		hp = new Label(String.format("HP:%d",hero.hp), font);
+		hp.setFontScale(4,4);
+		hp.setX(Gdx.graphics.getWidth()-300);
+		hp.setY(Gdx.graphics.getHeight()-100);
 		stage.addActor(UP);
 		stage.addActor(LEFT);
 		stage.addActor(RIGHT);
 		stage.addActor(Shoot);
-
+		stage.addActor(hp);
 		portalTexture = new Texture("portal.png");
 	}
 
@@ -234,7 +243,7 @@ public class MainGame implements Screen {
 		if(Gdx.input.isKeyPressed(Input.Keys.UP)){
 			hero.moveLeft();
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+		if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
 			hero.isAttacking = true;
 		}
 		if(LEFT.isPressed()){
@@ -243,9 +252,8 @@ public class MainGame implements Screen {
 		if(RIGHT.isPressed()){
 			hero.moveRight();
 		}
-
+		hp.setText(String.format("HP:%d",hero.hp));
 		collisionDetection();
-
 		stage.addActor(hero);
 		stage.addActor(fireMonster);
 		stage.act();
@@ -320,7 +328,6 @@ public class MainGame implements Screen {
 			game.setScreen(new GameOverScreen(game));
 			bgm.dispose();
 		}
-
 	}
 
 	@Override
