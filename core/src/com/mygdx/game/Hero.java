@@ -21,29 +21,38 @@ public class Hero extends Actor {
 
     Vector2 position = new Vector2();
     Vector2 velocity = new Vector2();
-    Rectangle bounds = new Rectangle();
     boolean isJumping = false;
     boolean left = false;
     boolean right = true;
     boolean onTheGround = true;
     int hp = 5;
     Texture img;
+    Texture attackSheet;
     Animation<TextureRegion> attackAnimation;
+    TextureRegion reg;
+    float stateTime;
+    boolean isAttacking = false;
 
     public Hero() {
         super();
-        attackAnimation = GifDecoder.loadGIFAnimation(Animation.PlayMode.NORMAL, Gdx.files.internal("match-fire-bg.gif").read());
+        attackSheet = new Texture(Gdx.files.internal("32x32_matchfire.png"));
+        TextureRegion[][] tmp = TextureRegion.split(attackSheet, attackSheet.getWidth() / 6, attackSheet.getHeight());
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + tmp[0].length);
+        TextureRegion[] attackFrames = new TextureRegion[6];
+        int cnt = 0;
+        for (TextureRegion[] regions : tmp){
+            for (TextureRegion region : regions){
+                attackFrames[cnt++] = region;
+            }
+        }
+        attackAnimation = new Animation<>(0.15f, attackFrames);
+        stateTime = 0f;
+        reg = attackAnimation.getKeyFrame(stateTime);
     }
 
-    public Hero(Vector2 position) {
-        super();
-        attackAnimation = GifDecoder.loadGIFAnimation(Animation.PlayMode.NORMAL, Gdx.files.internal("match-fire-bg.gif").read());
-        this.position = position;
-        this.bounds.height = SIZE;
-        this.bounds.width = SIZE;
+    public void attack(){
+        reg = attackAnimation.getKeyFrame(stateTime);
     }
-
-    public void attack(){}
 
     public void getHit(){
         hp--;
@@ -96,6 +105,14 @@ public class Hero extends Actor {
         // change velocity
         if (isJumping) {
             moveUp();
+        }
+
+        attack();
+        stateTime += delta;
+        reg = attackAnimation.getKeyFrame(stateTime,false);
+        if (attackAnimation.isAnimationFinished(stateTime)){
+            isAttacking = false;
+            stateTime = 0;
         }
 
         // add velocity to position

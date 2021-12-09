@@ -174,17 +174,12 @@ public class MainGame implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				hero.moveUp();
-//				if (hero.left){
-//					camera.translate(+2, 0);
-//				}else {
-//					camera.translate(-2, 0);
-//				}
 			}
 		});
 		Shoot.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				bullet.position.set(hero.position.x+10,hero.position.y+20);
+				hero.isAttacking = true;
 			}
 		});
 		//set monster's position
@@ -206,8 +201,6 @@ public class MainGame implements Screen {
 
 	@Override
 	public void render(float delta) {
-
-
 		// clear the screen
 		ScreenUtils.clear(0.7f, 0.7f, 1.0f, 1);
 		stage.getBatch().begin();
@@ -245,7 +238,11 @@ public class MainGame implements Screen {
 		// render the ball,firemonster,shooter
 		Batch batch = renderer.getBatch();
 		batch.begin();
-		batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+		if (hero.isAttacking){
+			batch.draw(hero.reg, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+		}else {
+			batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+		}
 		if(!fireMonster.isDead){
 			batch.draw(fireMonster.img,fireMonster.position.x,fireMonster.position.y,Monster.WIDTH,
 					Monster.HEIGHT);
