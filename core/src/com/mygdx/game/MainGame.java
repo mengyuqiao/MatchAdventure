@@ -224,16 +224,10 @@ public class MainGame implements Screen {
 		renderer.setView(camera);
 		renderer.render();
 		if(LEFT.isPressed()){
-//			camera.translate(+2,0);
 			hero.moveLeft();
-			hero.left = true;
-			hero.right = false;
 		}
 		if(RIGHT.isPressed()){
-//			camera.translate(-2,0);
 			hero.moveRight();
-			hero.right = true;
-			hero.left = false;
 		}
 
 		collisionDetection();
@@ -245,9 +239,18 @@ public class MainGame implements Screen {
 		Batch batch = renderer.getBatch();
 		batch.begin();
 		if (hero.isAttacking){
-			batch.draw(hero.reg, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+			if (hero.right){
+				batch.draw(hero.reg, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+			}else {
+				batch.draw(hero.flipReg, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+			}
 		}else {
-			batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+			if (hero.right){
+				batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT);
+			}else {
+				batch.draw(hero.img, hero.position.x, hero.position.y, Hero.WIDTH, Hero.HEIGHT, 0, 0, 32, 32, true, false);
+			}
+
 		}
 		if(!fireMonster.isDead){
 			batch.draw(fireMonster.img,fireMonster.position.x,fireMonster.position.y,Monster.WIDTH,
