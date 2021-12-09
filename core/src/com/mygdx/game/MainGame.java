@@ -204,19 +204,19 @@ public class MainGame implements Screen {
 		fireMonster2.position.set(900,130);
 
 		//create left fire monster 3
-		fireMonster2 = new Monster();
-		createLeftMonster(fireMonster2);
-		fireMonster2.position.set(900,225);
+		fireMonster3 = new Monster();
+		createLeftMonster(fireMonster3);
+		fireMonster3.position.set(900,225);
 
 		//create right right monster 1
-		fireMonster = new Monster();
-		createRightMonster(fireMonster);
-		fireMonster.position.set(400,320);
+		fireMonster4 = new Monster();
+		createRightMonster(fireMonster4);
+		fireMonster4.position.set(400,320);
 
 		//create left fire monster 4
-		fireMonster2 = new Monster();
-		createLeftMonster(fireMonster2);
-		fireMonster2.position.set(900,320);
+		fireMonster5 = new Monster();
+		createLeftMonster(fireMonster5);
+		fireMonster5.position.set(900,320);
 
 		//hero's attack
 		fireBall = new Attack();
