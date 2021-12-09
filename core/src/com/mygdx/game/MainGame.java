@@ -288,10 +288,14 @@ public class MainGame implements Screen {
 		if(!fireMonster.isDead){
 			batch.draw(fireMonster.img,fireMonster.position.x,fireMonster.position.y,Monster.WIDTH,
 					Monster.HEIGHT);
+			draw_left = fireMonster.fireRight(fire);
+			heroDestroyDetection(fire);
 		}
 		if(!fireMonster2.isDead){
 			batch.draw(fireMonster2.img,fireMonster2.position.x,fireMonster2.position.y,Monster.WIDTH,
 					Monster.HEIGHT);
+			draw_right = fireMonster2.fireLeft(fire2);
+			heroDestroyDetection(fire2);
 		}
 		//batch.draw(shooter.img,shooter.position.x,shooter.position.y,Monster.WIDTH,Monster
 		//.HEIGHT);
@@ -309,11 +313,6 @@ public class MainGame implements Screen {
 		batch.draw(portalTexture, 1792, 800, 48, 48);
 
 		batch.end();
-		draw_left = fireMonster.fireRight(fire);
-		draw_right = fireMonster2.fireLeft(fire2);
-		heroDestroyDetection(fire);
-		heroDestroyDetection(fire2);
-		//shooter.shoot(bullet);
 		if(hero.testDead()){
 			game.setScreen(new GameOverScreen(game));
 			bgm.dispose();
